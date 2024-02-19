@@ -32,9 +32,7 @@ MessageData parseMessage(const std::string &rawMessage) {
 
       // The rest of the line is a single trailing parameter
       std::string trailingParam = token.substr(1);
-      std::cout << " <<<<< " << trailingParam << std::endl;
       getline(stream, token, '\r'); // Assuming message ends with "\r\n",
-      std::cout << " <<<<< " << token << std::endl;
       trailingParam += token;
       messageData.params.push_back(trailingParam);
       break;

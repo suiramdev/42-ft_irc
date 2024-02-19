@@ -13,6 +13,8 @@ Client::~Client() { close(_fd); }
 void Client::send(const std::string &message) {
   ::send(_fd, message.c_str(), message.size(), 0);
   ::send(_fd, "\r\n", 2, 0);
+
+  std::cout << "Sent message: " << message << std::endl;
 }
 
 ssize_t Client::read(MessageData &messageData) {
