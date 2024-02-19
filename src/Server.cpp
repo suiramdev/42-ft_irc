@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "Channel.hpp"
 #include "Client.hpp"
 #include "CommandHandler.hpp"
 #include "Message.hpp"
@@ -21,6 +22,7 @@ Server::Server(std::string password) : password(password) {
 
 Server::~Server() {
   _clients.clear();
+  _channels.clear();
   if (_fd > 0) {
     close(_fd);
   }
@@ -51,6 +53,10 @@ void Server::bind(int port) {
 }
 
 Client *Server::addClient(int fd) {
+  if (_clients.find(fd) != _clients.end()) {
+    throw std::runtime_error("Client already exists");
+  }
+
   struct pollfd pfd;
   pfd.fd = fd;
   pfd.events = POLL_IN;
@@ -61,6 +67,17 @@ Client *Server::addClient(int fd) {
   _clients.insert(std::pair<int, Client *>(fd, client));
 
   return client;
+}
+
+Client *Server::getClient(std::string nickname) {
+  for (std::map<int, Client *>::iterator it = _clients.begin();
+       it != _clients.end(); ++it) {
+    if (it->second->nickname == nickname) {
+      return it->second;
+    }
+  }
+
+  return nullptr;
 }
 
 void Server::removeClient(int fd) {
@@ -101,7 +118,7 @@ void Server::handle() {
                                             *_clients[_pfds[i].fd]);
             } else if (bytes_read == 0) {
               removeClient(_pfds[i].fd);
-              std::cout << "Client disconnected" << std::endl;
+              std::cout << "Lost connection with a client" << std::endl;
             }
           } catch (const std::exception &e) {
             std::cerr << e.what() << std::endl;
@@ -123,4 +140,32 @@ void Server::listen(int port) {
   std::cout << "Listening on port " << port << std::endl;
 
   handle();
+}
+
+Channel *Server::addChannel(std::string name, std::string key) {
+  if (_channels.find(name) != _channels.end()) {
+    throw std::runtime_error("Channel already exists");
+  }
+
+  Channel *channel = new Channel(*this, name);
+  channel->key = key;
+  _channels.insert(std::pair<std::string, Channel *>(name, channel));
+
+  return channel;
+}
+
+Channel *Server::getChannel(std::string name) {
+  if (_channels.find(name) == _channels.end()) {
+    return nullptr;
+  }
+
+  return _channels[name];
+}
+
+void Server::removeChannel(std::string name) {
+  if (_channels.find(name) == _channels.end()) {
+    throw std::runtime_error("Channel does not exist");
+  }
+
+  _channels.erase(name);
 }

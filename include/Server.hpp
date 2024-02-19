@@ -9,6 +9,7 @@
 #define BACKLOG 10
 
 class Client;
+class Channel;
 class HookHandler;
 
 class Server {
@@ -16,6 +17,7 @@ private:
   int _fd;
   std::map<int, Client *> _clients;
   std::vector<struct pollfd> _pfds;
+  std::map<std::string, Channel *> _channels;
 
   /**
    * @brief Set the socket to reuse addresses
@@ -46,12 +48,14 @@ public:
    * @return The server's file descriptor
    */
   const int &fd() const { return _fd; }
+
   /**
    * @brief Listen on a port
    *
    * @param port The port to listen on
    */
   void listen(int port);
+
   /**
    * @brief Add a client to the server
    *
@@ -59,17 +63,44 @@ public:
    * @return The client
    */
   Client *addClient(int fd);
+
   /**
-   * @brief Get a client from the server
+   * @brief Get a client by file descriptor
    *
+   * @param nickname The client's nickname
    * @return The client
    */
-  Client *getClient(int fd);
+  Client *getClient(std::string nickname);
+
   /**
    * @brief Remove a client from the server
    * @param fd The client's file descriptor
    */
   void removeClient(int fd);
+
+  /**
+   * @brief Get a channel by name
+   *
+   * @param name The name of the channel
+   * @param key The key to the channel (optional)
+   * @return The channel
+   */
+  Channel *addChannel(std::string name, std::string key = "");
+
+  /**
+   * @brief Get a channel by name
+   *
+   * @param name The name of the channel
+   * @return The channel
+   */
+  Channel *getChannel(std::string name);
+
+  /**
+   * @brief Remove a channel by name
+   *
+   * @param name The name of the channel
+   */
+  void removeChannel(std::string name);
 
   class SocketException : public std::exception {
   private:

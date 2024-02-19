@@ -24,6 +24,8 @@ int main(int argc, char *argv[]) {
     hookHandler->registerCommand("USER", userCommand, false);
     hookHandler->registerCommand("PING", pingCommand);
     hookHandler->registerCommand("JOIN", joinCommand);
+    hookHandler->registerCommand("QUIT", quitCommand);
+    hookHandler->registerCommand("PRIVMSG", privmsgCommand);
     server->listen(atoi(argv[1]));
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;

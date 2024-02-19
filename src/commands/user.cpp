@@ -16,6 +16,7 @@ void userCommand(const std::vector<std::string> params, Client &sender) {
 
   sender.username = params[0];
   sender.mode = std::atoi(params[1].c_str());
+  sender.hostname = params[2];
   sender.realname = params[3];
 
   sender.attemptRegister();

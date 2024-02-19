@@ -42,16 +42,9 @@ ssize_t Client::read(MessageData &messageData) {
   return bytesRead;
 }
 
-void Client::disconnect() { _server.removeClient(_fd); }
-
-void Client::kick(std::string reason) {
-  send(reason);
-  disconnect();
-}
-
 void Client::attemptRegister() {
   if (password.empty() || nickname.empty() || username.empty() || mode > 0 ||
-      realname.empty()) {
+      hostname.empty() || realname.empty()) {
     return;
   }
 
@@ -62,6 +55,8 @@ void Client::attemptRegister() {
 
   _registered = true;
 
-  send("001 RPL_WELCOME :Welcome to the Internet Relay Network " + nickname +
-       "!" + username + "@localhost");
+  send("001 " + nickname + " :Welcome to the Internet Relay Network " +
+       nickname + "!" + username + "@" + hostname);
 }
+
+void Client::disconnect() { _server.removeClient(_fd); }

@@ -20,6 +20,7 @@ public:
   std::string nickname;
   std::string username;
   int mode;
+  std::string hostname;
   std::string realname;
 
   Client(Server &server, int fd);
@@ -27,7 +28,7 @@ public:
 
   const int &fd() const { return _fd; }
 
-  const Server &server() const { return _server; }
+  Server &server() const { return _server; }
 
   /**
    * @brief Send a message to the client
@@ -47,18 +48,6 @@ public:
   ssize_t read(MessageData &messageData);
 
   /**
-   * @brief Disconnect the client
-   */
-  void disconnect();
-
-  /**
-   * @brief Kick the client
-   *
-   * @param reason The reason for the kick
-   */
-  void kick(std::string reason);
-
-  /**
    * @brief Attempt to register the client
    */
   void attemptRegister();
@@ -69,4 +58,9 @@ public:
    * @return true if the client is registered, false otherwise
    */
   bool isRegistered() const { return _registered; }
+
+  /**
+   * @brief Disconnect the client
+   */
+  void disconnect();
 };
