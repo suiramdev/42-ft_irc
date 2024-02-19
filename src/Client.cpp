@@ -1,11 +1,12 @@
 #include "Client.hpp"
 #include "Message.hpp"
 #include "Server.hpp"
+#include <iostream>
 #include <sys/socket.h>
 #include <unistd.h>
 
 Client::Client(Server &server, int fd)
-    : _server(server), _fd(fd), _bufferPos(0) {}
+    : _server(server), _fd(fd), _bufferPos(0), mode(-1) {}
 
 Client::~Client() { close(_fd); }
 
@@ -32,6 +33,7 @@ ssize_t Client::read(MessageData &messageData) {
   std::string message =
       std::string(_buffer).substr(_bufferPos, carriageReturnPos - _bufferPos);
   messageData = parseMessage(message);
+  std::cout << "Received message: " << message << std::endl;
   bytesRead = carriageReturnPos - _bufferPos;
   _bufferPos = carriageReturnPos + 2; // We add 2 to skip the carriage return
 
@@ -43,4 +45,21 @@ void Client::disconnect() { _server.removeClient(_fd); }
 void Client::kick(std::string reason) {
   send(reason);
   disconnect();
+}
+
+void Client::attemptRegister() {
+  if (password.empty() || nickname.empty() || username.empty() || mode > 0 ||
+      realname.empty()) {
+    return;
+  }
+
+  if (password != _server.password) {
+    send("464 ERR_PASSWDMISMATCH :Password incorrect");
+    return;
+  }
+
+  _registered = true;
+
+  send("001 RPL_WELCOME :Welcome to the Internet Relay Network " + nickname +
+       "!" + username + "@localhost");
 }

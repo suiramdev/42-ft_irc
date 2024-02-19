@@ -9,7 +9,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-Server::Server() {
+Server::Server(std::string password) : password(password) {
   commandHandler = new CommandHandler();
   _fd = socket(AF_INET, SOCK_STREAM, 0);
   if (_fd < 0) {
@@ -93,9 +93,9 @@ void Server::handle() {
             MessageData messageData;
 
             ssize_t bytes_read = _clients[_pfds[i].fd]->read(messageData);
-            std::cout << bytes_read << " bytes read" << std::endl;
+            /* std::cout << bytes_read << " bytes read" << std::endl; */
             if (bytes_read > 0) {
-              logMessage(messageData);
+              /* logMessage(messageData); */
               commandHandler->handleCommand(messageData.command,
                                             messageData.params,
                                             *_clients[_pfds[i].fd]);

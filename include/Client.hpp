@@ -13,23 +13,29 @@ private:
   int _fd;
   char _buffer[BUFFER_SIZE];
   size_t _bufferPos;
+  bool _registered;
 
 public:
+  std::string password;
+  std::string nickname;
+  std::string username;
+  int mode;
+  std::string realname;
+
   Client(Server &server, int fd);
   ~Client();
 
-  /**
-   * @brief Get the client's file descriptor
-   *
-   * @return The client's file descriptor
-   */
   const int &fd() const { return _fd; }
+
+  const Server &server() const { return _server; }
+
   /**
    * @brief Send a message to the client
    *
    * @param message The message to send
    */
   void send(const std::string &message);
+
   /**
    * @brief Read a message from the client
    *
@@ -39,14 +45,28 @@ public:
    * @throw IRCComplianceException If the message is not IRC compliant
    */
   ssize_t read(MessageData &messageData);
+
   /**
    * @brief Disconnect the client
    */
   void disconnect();
+
   /**
    * @brief Kick the client
    *
    * @param reason The reason for the kick
    */
   void kick(std::string reason);
+
+  /**
+   * @brief Attempt to register the client
+   */
+  void attemptRegister();
+
+  /**
+   * @brief Check if the client is registered
+   *
+   * @return true if the client is registered, false otherwise
+   */
+  bool isRegistered() const { return _registered; }
 };

@@ -33,9 +33,11 @@ private:
   void handle();
 
 public:
+  /* std::string hostname; */
+  std::string password;
   CommandHandler *commandHandler;
 
-  Server();
+  Server(std::string password);
   ~Server();
 
   /**

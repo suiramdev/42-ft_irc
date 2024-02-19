@@ -13,17 +13,18 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
 
-  // Extract the port and password from the command line arguments
-  const int PORT = atoi(argv[1]);
-  const std::string PASSWORD = argv[2];
-
   Server *server = NULL;
 
   try {
-    server = new Server();
+    server = new Server(argv[2]);
     CommandHandler *hookHandler = server->commandHandler;
-    hookHandler->registerCommand("CAP", capCommand);
-    server->listen(PORT);
+    hookHandler->registerCommand("CAP", capCommand, false);
+    hookHandler->registerCommand("PASS", passCommand, false);
+    hookHandler->registerCommand("NICK", nickCommand, false);
+    hookHandler->registerCommand("USER", userCommand, false);
+    hookHandler->registerCommand("PING", pingCommand);
+    hookHandler->registerCommand("JOIN", joinCommand);
+    server->listen(atoi(argv[1]));
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
     return EXIT_FAILURE;

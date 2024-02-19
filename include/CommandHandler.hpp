@@ -7,9 +7,14 @@ class Client;
 
 typedef void (*command_callback)(const std::vector<std::string>, Client &);
 
+typedef struct {
+  command_callback callback;
+  bool authRequired;
+} Command;
+
 class CommandHandler {
 private:
-  std::map<std::string, command_callback> _commands;
+  std::map<std::string, Command> _commands;
 
 public:
   CommandHandler();
@@ -21,14 +26,15 @@ public:
    * @param name Name of the command
    * @param callback Callback to be called when the command is fired
    */
-  void registerCommand(const std::string name, command_callback callback);
+  void registerCommand(const std::string name, command_callback callback,
+                       bool authRequired = true);
   /**
    * @brief Handle a command
    *
-   * @param command The command to handle
+   * @param name The command name to handle
    * @param messageData The message data
    * @param sender The client that sent the command
    */
-  void handleCommand(const std::string command,
+  void handleCommand(const std::string name,
                      const std::vector<std::string> params, Client &sender);
 };

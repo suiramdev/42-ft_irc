@@ -5,3 +5,8 @@
 class Client;
 
 void capCommand(const std::vector<std::string> params, Client &sender);
+void passCommand(const std::vector<std::string> params, Client &sender);
+void nickCommand(const std::vector<std::string> params, Client &sender);
+void userCommand(const std::vector<std::string> params, Client &sender);
+void joinCommand(const std::vector<std::string> params, Client &sender);
+void pingCommand(const std::vector<std::string> params, Client &sender);
