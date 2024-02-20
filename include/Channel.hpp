@@ -3,21 +3,24 @@
 #include <map>
 #include <string>
 
+typedef enum {
+  BAN_CHANNEL = 0x1,
+  INVITE_ONLY = 0x2,
+  KEY_CHANNEL = 0x3,
+} ChannelMode;
+
 class Server;
 class Client;
-
-typedef struct {
-  bool privileged;
-  Client *client;
-} ChannelClient;
 
 class Channel {
 private:
   Server &_server;
   const std::string _name;
-  std::map<int, ChannelClient> _clients;
+  std::map<int, Client *> _members;
+  std::map<int, Client *> _operators;
 
 public:
+  ChannelMode mode;
   std::string key;
   std::string topic;
 
@@ -28,30 +31,48 @@ public:
 
   const std::string &name() const { return _name; }
 
-  const std::map<int, ChannelClient> &clients() const { return _clients; }
+  const std::map<int, Client *> &members() const { return _members; }
+
+  const std::map<int, Client *> &operators() const { return _operators; }
 
   /**
-   * @brief Add a client to the channel
+   * @brief Add a member to the channel
    *
    * @param client The client to add
-   * @return The channel client
+   * @param privileged Whether the client should be privileged
    */
-  ChannelClient addClient(Client &client);
+  void addMember(Client &client, bool privileged = false);
 
   /**
-   * @brief Check if a client is in the channel
+   * @brief Check if a client is a member of the channel
    *
    * @param client The client to check
-   * @return true if the client is in the channel, false otherwise
+   * @return true if the client is a member, false otherwise
    */
-  bool hasClient(Client &client);
+  bool hasMember(Client &client);
 
   /**
-   * @brief Remove a client from the channel
+   * @brief Remove a member from the channel
    *
    * @param client The client to remove
    */
-  void removeClient(Client &client);
+  void removeMember(Client &client);
+
+  /**
+   * @brief Check if a client is an operator of the channel
+   *
+   * @param client The client to check
+   * @return true if the client is an operator, false otherwise
+   */
+  bool isOperator(Client &client);
+
+  /**
+   * @brief Set a client as an operator of the channel
+   *
+   * @param client The client to set
+   * @param privileged Whether the client should be privileged
+   */
+  void setOperator(Client &client, bool privileged = true);
 
   /**
    * @brief Send a message to the channel
@@ -61,7 +82,7 @@ public:
   void send(const std::string &message);
 
   /**
-   * @brief Send a message to the channel
+   * @brief Send a message to the channel, excluding the sender
    *
    * @param message The message to send
    * @param sender The client that sent the message

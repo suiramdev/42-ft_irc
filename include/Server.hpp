@@ -85,7 +85,16 @@ public:
    * @param key The key to the channel (optional)
    * @return The channel
    */
-  Channel *addChannel(std::string name, std::string key = "");
+  Channel *addChannel(std::string name);
+
+  /**
+   * @brief Get a channel by name, with a key
+   *
+   * @param name The name of the channel
+   * #param key The key to the channel
+   * @return The channel
+   */
+  Channel *addChannel(std::string name, std::string key);
 
   /**
    * @brief Get a channel by name

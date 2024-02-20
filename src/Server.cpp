@@ -21,9 +21,19 @@ Server::Server(std::string password) : password(password) {
 }
 
 Server::~Server() {
-  _clients.clear();
-  _channels.clear();
+  // Delete all clients
+  for (std::map<int, Client *>::iterator it = _clients.begin();
+       it != _clients.end(); ++it) {
+    delete it->second;
+  }
+  // Delete all channels
+  for (std::map<std::string, Channel *>::iterator it = _channels.begin();
+       it != _channels.end(); ++it) {
+    delete it->second;
+  }
+
   if (_fd > 0) {
+    // Close the server's socket
     close(_fd);
   }
   delete commandHandler;
@@ -142,14 +152,20 @@ void Server::listen(int port) {
   handle();
 }
 
-Channel *Server::addChannel(std::string name, std::string key) {
+Channel *Server::addChannel(std::string name) {
   if (_channels.find(name) != _channels.end()) {
     throw std::runtime_error("Channel already exists");
   }
 
   Channel *channel = new Channel(*this, name);
-  channel->key = key;
   _channels.insert(std::pair<std::string, Channel *>(name, channel));
+
+  return channel;
+}
+
+Channel *Server::addChannel(std::string name, std::string key) {
+  Channel *channel = addChannel(name);
+  channel->key = key;
 
   return channel;
 }
@@ -167,5 +183,6 @@ void Server::removeChannel(std::string name) {
     throw std::runtime_error("Channel does not exist");
   }
 
+  delete _channels[name];
   _channels.erase(name);
 }

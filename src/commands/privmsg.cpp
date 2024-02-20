@@ -21,13 +21,16 @@ void privmsgCommand(const std::vector<std::string> params, Client &sender) {
       return;
     }
 
-    if (!channel->hasClient(sender)) {
+    if (!channel->hasMember(sender)) {
       sender.send("404 ERR_CANNOTSENDTOCHAN " + params[0] +
                   " :Cannot send to channel");
       return;
     }
 
-    channel->send("PRIVMSG " + params[0] + " :" + params[1], sender);
+    channel->send(":" + sender.nickname + "!" + sender.username + "@" +
+                      sender.hostname + " PRIVMSG " + params[0] + " :" +
+                      params[1],
+                  sender);
   } else {
     Client *client = sender.server().getClient(params[0]);
 
@@ -37,6 +40,8 @@ void privmsgCommand(const std::vector<std::string> params, Client &sender) {
     }
 
     client->send("PRIVMSG " + params[0] + " :" + params[1]);
+    client->send(":" + sender.nickname + "!" + sender.username + "@" +
+                 sender.hostname + " PRIVMSG " + params[0] + " :" + params[1]);
   }
 
   return;

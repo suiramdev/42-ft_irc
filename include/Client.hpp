@@ -3,9 +3,11 @@
 #define BUFFER_SIZE 512
 
 #include "Message.hpp"
+#include <map>
 #include <string>
 
 class Server;
+class Channel;
 
 class Client {
 private:
@@ -14,6 +16,7 @@ private:
   char _buffer[BUFFER_SIZE];
   size_t _bufferPos;
   bool _registered;
+  std::map<std::string, Channel *> _channels;
 
 public:
   std::string password;
@@ -29,6 +32,20 @@ public:
   const int &fd() const { return _fd; }
 
   Server &server() const { return _server; }
+
+  const std::map<std::string, Channel *> &channels() const { return _channels; }
+
+  /**
+   * @brief Attempt to register the client
+   */
+  void attemptRegister();
+
+  /**
+   * @brief Check if the client is registered
+   *
+   * @return true if the client is registered, false otherwise
+   */
+  bool isRegistered() const { return _registered; }
 
   /**
    * @brief Send a message to the client
@@ -48,19 +65,22 @@ public:
   ssize_t read(MessageData &messageData);
 
   /**
-   * @brief Attempt to register the client
+   * @brief Join a channel
+   *
+   * @param channel The channel to join
+   * @param key The key to use, if the channel is password protected
    */
-  void attemptRegister();
+  void joinChannel(const std::string name, const std::string &key = "");
 
   /**
-   * @brief Check if the client is registered
+   * @brief Part a channel
    *
-   * @return true if the client is registered, false otherwise
+   * @param channel The channel to part
    */
-  bool isRegistered() const { return _registered; }
+  void partChannel(const std::string name);
 
   /**
    * @brief Disconnect the client
    */
-  void disconnect();
+  void quit();
 };

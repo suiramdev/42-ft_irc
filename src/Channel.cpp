@@ -3,47 +3,58 @@
 #include "Server.hpp"
 
 Channel::Channel(Server &server, std::string name)
-    : _server(server), _name(name) {}
+    : _server(server), _name(name), mode(BAN_CHANNEL) {}
 
-Channel::~Channel() { _clients.clear(); }
+Channel::~Channel() {}
 
-ChannelClient Channel::addClient(Client &client) {
-  if (_clients.find(client.fd()) != _clients.end()) {
-    throw std::runtime_error("Client already exists");
+void Channel::addMember(Client &client, bool privileged) {
+  _members[client.fd()] = &client;
+  if (privileged) {
+    _operators[client.fd()] = &client;
   }
-
-  ChannelClient channelClient = {.privileged = _clients.size() <= 0,
-                                 .client = &client};
-
-  _clients.insert(std::pair<int, ChannelClient>(client.fd(), channelClient));
-
-  return channelClient;
 }
 
-bool Channel::hasClient(Client &client) {
-  return _clients.find(client.fd()) != _clients.end();
+bool Channel::hasMember(Client &client) {
+  return _members.find(client.fd()) != _members.end();
 }
 
-void Channel::removeClient(Client &client) {
-  _clients.erase(client.fd());
+bool Channel::isOperator(Client &client) {
+  return _operators.find(client.fd()) != _operators.end();
+}
 
-  if (_clients.size() <= 0) {
+void Channel::removeMember(Client &client) {
+  _members.erase(client.fd());
+  _operators.erase(client.fd());
+
+  if (_members.empty()) { // If the channel is empty, remove it from the server
     _server.removeChannel(_name);
   }
 }
 
+void Channel::setOperator(Client &client, bool privileged) {
+  if (!hasMember(client)) {
+    return;
+  }
+
+  if (privileged) {
+    _operators[client.fd()] = &client;
+  } else {
+    _operators.erase(client.fd());
+  }
+}
+
 void Channel::send(const std::string &message) {
-  for (std::map<int, ChannelClient>::iterator it = _clients.begin();
-       it != _clients.end(); ++it) {
-    it->second.client->send(message);
+  for (std::map<int, Client *>::iterator it = _members.begin();
+       it != _members.end(); ++it) {
+    it->second->send(message);
   }
 }
 
 void Channel::send(const std::string &message, Client &sender) {
-  for (std::map<int, ChannelClient>::iterator it = _clients.begin();
-       it != _clients.end(); ++it) {
-    if (it->second.client->fd() != sender.fd()) {
-      it->second.client->send(message);
+  for (std::map<int, Client *>::iterator it = _members.begin();
+       it != _members.end(); ++it) {
+    if (it->second->fd() != sender.fd()) {
+      it->second->send(message);
     }
   }
 }

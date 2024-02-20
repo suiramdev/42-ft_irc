@@ -1,6 +1,9 @@
 #include "Client.hpp"
+#include "Channel.hpp"
 #include "Message.hpp"
+#include "REPLIES.h"
 #include "Server.hpp"
+#include <exception>
 #include <iostream>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -8,7 +11,27 @@
 Client::Client(Server &server, int fd)
     : _server(server), _fd(fd), _bufferPos(0), mode(-1) {}
 
-Client::~Client() { close(_fd); }
+Client::~Client() {
+  if (_fd > 0) {
+    close(_fd);
+  }
+}
+
+void Client::attemptRegister() {
+  if (password.empty() || nickname.empty() || username.empty() || mode > 0 ||
+      hostname.empty() || realname.empty()) {
+    return;
+  }
+
+  if (password != _server.password) {
+    send("464 ERR_PASSWDMISMATCH :Password incorrect");
+    return;
+  }
+
+  _registered = true;
+
+  send(RPL_WELCOME(nickname));
+}
 
 void Client::send(const std::string &message) {
   ::send(_fd, message.c_str(), message.size(), 0);
@@ -42,21 +65,42 @@ ssize_t Client::read(MessageData &messageData) {
   return bytesRead;
 }
 
-void Client::attemptRegister() {
-  if (password.empty() || nickname.empty() || username.empty() || mode > 0 ||
-      hostname.empty() || realname.empty()) {
-    return;
+void Client::joinChannel(const std::string name, const std::string &key) {
+  Channel *channel = _server.getChannel(name);
+
+  if (channel) {
+    // TODO: Reject if the client is already is not invited
+    if (channel->mode == ChannelMode::KEY_CHANNEL && key != key) {
+      throw std::exception();
+      send(ERR_BADCHANNELKEY(nickname, name));
+      return;
+    }
+
+    channel->addMember(*this, false);
+    _channels[name] = channel;
+  } else {
+    channel = _server.addChannel(name, key);
+    channel->addMember(*this, true);
   }
 
-  if (password != _server.password) {
-    send("464 ERR_PASSWDMISMATCH :Password incorrect");
-    return;
-  }
-
-  _registered = true;
-
-  send("001 " + nickname + " :Welcome to the Internet Relay Network " +
-       nickname + "!" + username + "@" + hostname);
+  _channels[name] = channel;
+  // TODO: Send JOIN message to channel, and topic, ...
 }
 
-void Client::disconnect() { _server.removeClient(_fd); }
+void Client::partChannel(const std::string name) {
+  if (!_server.getChannel(name)) {
+    send(ERR_NOSUCHCHANNEL(nickname, name));
+    return;
+  }
+
+  if (_channels.find(name) == _channels.end()) {
+    send(ERR_NOTONCHANNEL(nickname, name));
+    return;
+  }
+
+  // TODO: Send PART message to channel
+  _channels[name]->removeMember(*this);
+  _channels.erase(name);
+}
+
+void Client::quit() { _server.removeClient(_fd); }

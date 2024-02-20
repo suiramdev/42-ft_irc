@@ -25,25 +25,9 @@ void joinCommand(const std::vector<std::string> params, Client &sender) {
     }
 
     if (!std::getline(channelsKeyStream, channelKey, ',')) {
-      channelKey = "";
-    }
-
-    Channel *channel = sender.server().getChannel(channelName);
-    if (!channel) {
-      channel = sender.server().addChannel(channelName, channelKey);
-    }
-
-    if (!channel->key.empty() && channelKey != channel->key) {
-      sender.send("475 ERR_BADCHANNELKEY " + channelName +
-                  " :Cannot join channel (+k)");
-      return;
-    }
-
-    channel->addClient(sender);
-    if (channel->topic.empty()) {
-      sender.send("331 RPL_NOTOPIC " + channelName + " :No topic is set");
+      sender.joinChannel(channelName);
     } else {
-      sender.send("332 RPL_TOPIC " + channelName + " :" + channel->topic);
+      sender.joinChannel(channelName, channelKey);
     }
   }
 
