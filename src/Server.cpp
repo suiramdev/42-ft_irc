@@ -5,7 +5,6 @@
 #include "Message.hpp"
 #include "utils/Logger.hpp"
 #include <fcntl.h>
-#include <iostream>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -137,7 +136,7 @@ void Server::handle() {
               removeClient(_pfds[i].fd);
             }
           } catch (const std::exception &e) {
-            std::cerr << e.what() << std::endl;
+            Logger::error(e.what());
           }
         }
       }

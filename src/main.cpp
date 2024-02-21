@@ -1,6 +1,7 @@
 #include "CommandHandler.hpp"
 #include "Server.hpp"
 #include "commands.hpp"
+#include "utils/Logger.hpp"
 #include <fcntl.h>
 #include <iostream>
 #include <netinet/in.h>
@@ -29,7 +30,7 @@ int main(int argc, char *argv[]) {
     commandHandler->registerCommand("PRIVMSG", privmsgCommand);
     server->listen(atoi(argv[1]));
   } catch (std::exception &e) {
-    std::cerr << e.what() << std::endl;
+    Logger::error(e.what());
     return EXIT_FAILURE;
   }
 

@@ -14,7 +14,7 @@ private:
 
 public:
   IRCComplianceException(std::string message) throw()
-      : _msg("Error: IRC compliance: " + message) {}
+      : _msg("IRC compliance: " + message) {}
   virtual ~IRCComplianceException() throw() {}
   virtual const char *what() const throw() { return _msg.c_str(); }
 };

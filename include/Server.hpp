@@ -116,8 +116,7 @@ public:
     std::string _msg;
 
   public:
-    SocketException(std::string message) throw()
-        : _msg("Error: socket: " + message) {}
+    SocketException(std::string message) throw() : _msg("socket: " + message) {}
     virtual ~SocketException() throw() {}
     virtual const char *what() const throw() { return _msg.c_str(); }
   };
