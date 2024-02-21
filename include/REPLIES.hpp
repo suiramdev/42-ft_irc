@@ -24,6 +24,9 @@
 #define ERR_NONICKNAMEGIVEN(clientNickname)                                    \
   "431 " + clientNickname + " :No nickname given"
 
+#define ERR_NICKNAMEINUSE(clientNickname, nickname)                            \
+  "433 " + clientNickname + " " + nickname + " :Nickname is already in use"
+
 #define ERR_NOTONCHANNEL(clientNickname, channelName)                          \
   "442 " + clientNickname + " " + channelName + " :You're not on that channel"
 

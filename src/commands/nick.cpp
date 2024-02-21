@@ -9,5 +9,10 @@ void nickCommand(const std::vector<std::string> params, Client &sender) {
     return;
   }
 
+  if (sender.server().getClient(params[0])) {
+    sender.send(ERR_NICKNAMEINUSE(sender.nickname, params[0]));
+    return;
+  }
+
   sender.nickname = params[0];
 }
