@@ -24,6 +24,9 @@
 #define ERR_NONICKNAMEGIVEN(clientNickname)                                    \
   "431 " + clientNickname + " :No nickname given"
 
+#define ERR_ERRONEUSNICKNAME(clientNickname, nickname)                         \
+  "432 " + clientNickname + " " + nickname + " :Erroneus nickname"
+
 #define ERR_NICKNAMEINUSE(clientNickname, nickname)                            \
   "433 " + clientNickname + " " + nickname + " :Nickname is already in use"
 

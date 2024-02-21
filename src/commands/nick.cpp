@@ -9,6 +9,13 @@ void nickCommand(const std::vector<std::string> params, Client &sender) {
     return;
   }
 
+  if (params[0].find('#') != std::string::npos ||
+      params[0].find(':') != std::string::npos ||
+      params[0].find(' ') != std::string::npos) {
+    sender.send(ERR_ERRONEUSNICKNAME(sender.nickname, params[0]));
+    return;
+  }
+
   if (sender.server().getClient(params[0])) {
     sender.send(ERR_NICKNAMEINUSE(sender.nickname, params[0]));
     return;
