@@ -28,12 +28,11 @@ MessageData parseMessage(const std::string &rawMessage) {
   // Extract parameters
   while (stream >> token) {
     if (token[0] == ':') {
-      // FIX: This should check that the : is not empty
-
       // The rest of the line is a single trailing parameter
       std::string trailingParam = token.substr(1);
-      getline(stream, token, '\r'); // Assuming message ends with "\r\n",
-      trailingParam += token;
+      if (getline(stream, token, '\r')) {
+        trailingParam += token; // Append the rest of the line
+      }
       messageData.params.push_back(trailingParam);
       break;
     } else {

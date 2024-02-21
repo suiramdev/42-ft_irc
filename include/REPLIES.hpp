@@ -42,5 +42,8 @@
 #define ERR_ALREADYREGISTRED(clientNickname)                                   \
   "462 " + clientNickname + " :You may not reregister"
 
+#define ERR_PASSWDMISMATCH(clientNickname)                                     \
+  "464 " + clientNickname + " :Password incorrect"
+
 #define ERR_BADCHANNELKEY(clientNickname, channelName)                         \
   "475 " + clientNickname + " " + channelName + " :Cannot join channel (+k)"

@@ -1,6 +1,7 @@
 #include "Channel.hpp"
 #include "Client.hpp"
 #include "Server.hpp"
+#include <iostream>
 
 Channel::Channel(Server &server, std::string name)
     : _server(server), _name(name), mode(BAN_CHANNEL) {}
