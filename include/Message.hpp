@@ -28,4 +28,3 @@ public:
  * @return The parsed message data
  */
 MessageData parseMessage(const std::string &rawMessage);
-void logMessage(MessageData messageData);

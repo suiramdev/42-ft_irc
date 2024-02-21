@@ -3,6 +3,7 @@
 #include "Client.hpp"
 #include "CommandHandler.hpp"
 #include "Message.hpp"
+#include "utils/Logger.hpp"
 #include <fcntl.h>
 #include <iostream>
 #include <netinet/in.h>
@@ -17,7 +18,7 @@ Server::Server(std::string password) : password(password) {
     throw SocketException("init");
   }
 
-  std::cout << "Socket created" << std::endl;
+  Logger::info("Server initialized");
 }
 
 Server::~Server() {
@@ -38,7 +39,7 @@ Server::~Server() {
   }
   delete commandHandler;
 
-  std::cout << "Server shutdown" << std::endl;
+  Logger::info("Server shutdown");
 }
 
 void Server::setReuseAddr() {
@@ -59,7 +60,7 @@ void Server::bind(int port) {
     throw SocketException("bind");
   }
 
-  std::cout << "Socket bound to port " << port << std::endl;
+  Logger::info("Server bound to port " + std::to_string(port));
 }
 
 Client *Server::addClient(int fd) {
@@ -96,6 +97,13 @@ void Server::removeClient(int fd) {
       _pfds.erase(_pfds.begin() + i);
     }
   }
+  Client *client = _clients[fd];
+  if (client && client->isRegistered()) {
+    Logger::info(client->nickname + " has quit");
+  } else {
+    Logger::info("A client has quit");
+  }
+
   delete _clients[fd];
   _clients.erase(fd);
 }
@@ -110,7 +118,7 @@ void Server::handle() {
       throw SocketException("accept");
     } else if (client_fd > 0) { // A client connected
       addClient(client_fd);
-      std::cout << "Client connected" << std::endl;
+      Logger::info("Client connected");
     }
 
     int poll_count = poll(_pfds.data(), _pfds.size(), 100); // Wait for events
@@ -121,15 +129,12 @@ void Server::handle() {
             MessageData messageData;
 
             ssize_t bytes_read = _clients[_pfds[i].fd]->read(messageData);
-            /* std::cout << bytes_read << " bytes read" << std::endl; */
             if (bytes_read > 0) {
-              /* logMessage(messageData); */
               commandHandler->handleCommand(messageData.command,
                                             messageData.params,
                                             *_clients[_pfds[i].fd]);
             } else if (bytes_read == 0) {
               removeClient(_pfds[i].fd);
-              std::cout << "Lost connection with a client" << std::endl;
             }
           } catch (const std::exception &e) {
             std::cerr << e.what() << std::endl;
@@ -148,7 +153,7 @@ void Server::listen(int port) {
     throw SocketException("listen");
   }
 
-  std::cout << "Listening on port " << port << std::endl;
+  Logger::info("Server listening on port " + std::to_string(port));
 
   handle();
 }

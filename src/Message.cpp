@@ -42,12 +42,3 @@ MessageData parseMessage(const std::string &rawMessage) {
 
   return messageData;
 }
-
-void logMessage(MessageData messageData) {
-  std::cout << "Prefix: " << messageData.prefix << std::endl;
-  std::cout << "Command: " << messageData.command << std::endl;
-  std::cout << "Params: " << std::endl;
-  for (size_t i = 0; i < messageData.params.size(); i++) {
-    std::cout << messageData.params[i] << std::endl;
-  }
-}

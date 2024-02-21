@@ -3,8 +3,8 @@
 #include "Message.hpp"
 #include "REPLIES.hpp"
 #include "Server.hpp"
+#include "utils/Logger.hpp"
 #include <exception>
-#include <iostream>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -37,7 +37,7 @@ void Client::send(const std::string &message) {
   ::send(_fd, message.c_str(), message.size(), 0);
   ::send(_fd, "\r\n", 2, 0);
 
-  std::cout << "Sent message: " << message << std::endl;
+  Logger::out(message);
 }
 
 ssize_t Client::read(MessageData &messageData) {
@@ -58,7 +58,7 @@ ssize_t Client::read(MessageData &messageData) {
   std::string message =
       std::string(_buffer).substr(_bufferPos, carriageReturnPos - _bufferPos);
   messageData = parseMessage(message);
-  std::cout << "Received message: " << message << std::endl;
+  Logger::in(message);
   bytesRead = carriageReturnPos - _bufferPos;
   _bufferPos = carriageReturnPos + 2; // We add 2 to skip the carriage return
 
