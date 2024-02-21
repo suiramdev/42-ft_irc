@@ -19,6 +19,7 @@ private:
   std::map<std::string, Channel *> _channels;
 
 public:
+  bool negotiating;
   std::string password;
   std::string nickname;
   std::string username;

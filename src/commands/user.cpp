@@ -12,5 +12,7 @@ void userCommand(const std::vector<std::string> params, Client &sender) {
   sender.username = params[0];
   sender.realname = params[3];
 
-  sender.attemptRegister();
+  if (!sender.negotiating) {
+    sender.attemptRegister();
+  }
 }

@@ -3,8 +3,11 @@
 
 void capCommand(const std::vector<std::string> params, Client &sender) {
   if (params[0] == "LS") {
+    sender.negotiating = true;
     sender.send("CAP * LS :");
   } else if (params[0] == "END") {
-    sender.send("CAP * ACK :");
+    if (sender.negotiating) {
+      sender.negotiating = false;
+    }
   }
 }

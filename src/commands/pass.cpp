@@ -11,5 +11,7 @@ void passCommand(const std::vector<std::string> params, Client &sender) {
 
   sender.password = params[0];
 
-  sender.attemptRegister();
+  if (!sender.negotiating) {
+    sender.attemptRegister();
+  }
 }
