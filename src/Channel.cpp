@@ -1,18 +1,24 @@
 #include "Channel.hpp"
 #include "Client.hpp"
+#include "REPLIES.hpp"
 #include "Server.hpp"
-#include <iostream>
 
 Channel::Channel(Server &server, std::string name)
     : _server(server), _name(name), mode(BAN_CHANNEL) {}
 
 Channel::~Channel() {}
 
-void Channel::addMember(Client &client, bool privileged) {
+bool Channel::addMember(Client &client, bool privileged) {
+  if (mode == LIMIT_CHANNEL && _members.size() >= maxMembers) {
+    client.send(ERR_CHANNELISFULL(client.nickname, _name));
+    return false;
+  }
+
   _members[client.fd()] = &client;
   if (privileged) {
     _operators[client.fd()] = &client;
   }
+  return true;
 }
 
 bool Channel::hasMember(Client &client) {

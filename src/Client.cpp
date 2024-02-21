@@ -1,4 +1,5 @@
 #include "Client.hpp"
+#include "CONFIG.hpp"
 #include "Channel.hpp"
 #include "Message.hpp"
 #include "REPLIES.hpp"
@@ -66,6 +67,11 @@ ssize_t Client::read(MessageData &messageData) {
 }
 
 void Client::joinChannel(const std::string &name, const std::string &key) {
+  if (_channels.size() >= MAX_CHANNELS) {
+    send(ERR_TOOMANYCHANNELS(nickname, name));
+    return;
+  }
+
   Channel *channel = _server.getChannel(name);
 
   if (channel) {
@@ -76,15 +82,18 @@ void Client::joinChannel(const std::string &name, const std::string &key) {
       return;
     }
 
-    channel->addMember(*this, false);
-    _channels[name] = channel;
+    if (channel->addMember(*this, false)) {
+      _channels[name] = channel;
+    }
   } else {
     channel = _server.addChannel(name, key);
     channel->addMember(*this, true);
   }
 
   _channels[name] = channel;
-  // TODO: Send JOIN message to channel, and topic, ...
+  channel->send(":" + nickname + "!" + username + "@" + hostname + " JOIN #" +
+                    name,
+                *this);
 }
 
 void Client::partChannel(const std::string &name, const std::string &reason) {

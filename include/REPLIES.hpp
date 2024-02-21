@@ -12,6 +12,10 @@
 #define ERR_CANNOTSENDTOCHAN(clientNickname, channelName)                      \
   "404 " + clientNickname + " " + channelName + " :Cannot send to channel"
 
+#define ERR_TOOMANYCHANNELS(clientNickname, channelName)                       \
+  "405 " + clientNickname + " " + channelName +                                \
+      " :You have joined too many channels"
+
 #define ERR_NORECIPIENT(clientNickname)                                        \
   "411 " + clientNickname + " :No recipient given (PRIVMSG)"
 
@@ -44,6 +48,9 @@
 
 #define ERR_PASSWDMISMATCH(clientNickname)                                     \
   "464 " + clientNickname + " :Password incorrect"
+
+#define ERR_CHANNELISFULL(clientNickname, channelName)                         \
+  "471 " + clientNickname + " " + channelName + " :Cannot join channel (+l)"
 
 #define ERR_BADCHANNELKEY(clientNickname, channelName)                         \
   "475 " + clientNickname + " " + channelName + " :Cannot join channel (+k)"

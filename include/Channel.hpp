@@ -5,8 +5,9 @@
 
 typedef enum {
   BAN_CHANNEL = 0x1,
-  INVITE_ONLY = 0x2,
-  KEY_CHANNEL = 0x3,
+  LIMIT_CHANNEL = 0x2,
+  INVITE_ONLY = 0x3,
+  KEY_CHANNEL = 0x4,
 } ChannelMode;
 
 class Server;
@@ -23,6 +24,7 @@ public:
   ChannelMode mode;
   std::string key;
   std::string topic;
+  unsigned long maxMembers;
 
   Channel(Server &server, std::string name);
   ~Channel();
@@ -40,8 +42,9 @@ public:
    *
    * @param client The client to add
    * @param privileged Whether the client should be privileged
+   * @return true if the client was added, false otherwise
    */
-  void addMember(Client &client, bool privileged = false);
+  bool addMember(Client &client, bool privileged = false);
 
   /**
    * @brief Check if a client is a member of the channel
