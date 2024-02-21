@@ -7,6 +7,7 @@ void capCommand(const std::vector<std::string> params, Client &sender) {
     sender.send("CAP * LS :");
   } else if (params[0] == "END") {
     if (sender.negotiating) {
+      sender.attemptRegister();
       sender.negotiating = false;
     }
   }
