@@ -96,6 +96,7 @@ void Server::removeClient(int fd) {
       _pfds.erase(_pfds.begin() + i);
     }
   }
+  delete _clients[fd];
   _clients.erase(fd);
 }
 
