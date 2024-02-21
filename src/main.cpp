@@ -17,15 +17,15 @@ int main(int argc, char *argv[]) {
 
   try {
     server = new Server(argv[2]);
-    CommandHandler *hookHandler = server->commandHandler;
-    hookHandler->registerCommand("CAP", capCommand, false);
-    hookHandler->registerCommand("PASS", passCommand, false);
-    hookHandler->registerCommand("NICK", nickCommand, false);
-    hookHandler->registerCommand("USER", userCommand, false);
-    hookHandler->registerCommand("PING", pingCommand);
-    hookHandler->registerCommand("JOIN", joinCommand);
-    hookHandler->registerCommand("QUIT", quitCommand);
-    hookHandler->registerCommand("PRIVMSG", privmsgCommand);
+    CommandHandler *commandHandler = server->commandHandler;
+    commandHandler->registerCommand("CAP", capCommand, false);
+    commandHandler->registerCommand("PASS", passCommand, false, 1);
+    commandHandler->registerCommand("NICK", nickCommand, false);
+    commandHandler->registerCommand("USER", userCommand, false, 4);
+    commandHandler->registerCommand("PING", pingCommand, true, 1);
+    commandHandler->registerCommand("JOIN", joinCommand, true, 1);
+    commandHandler->registerCommand("QUIT", quitCommand);
+    commandHandler->registerCommand("PRIVMSG", privmsgCommand);
     server->listen(atoi(argv[1]));
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;

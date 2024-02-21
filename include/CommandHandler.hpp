@@ -10,6 +10,7 @@ typedef void (*command_callback)(const std::vector<std::string>, Client &);
 typedef struct {
   command_callback callback;
   bool authRequired;
+  unsigned long minParams;
 } Command;
 
 class CommandHandler {
@@ -27,7 +28,8 @@ public:
    * @param callback Callback to be called when the command is fired
    */
   void registerCommand(const std::string name, command_callback callback,
-                       bool authRequired = true);
+                       bool authRequired = true, unsigned long minParams = 0);
+
   /**
    * @brief Handle a command
    *

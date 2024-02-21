@@ -7,6 +7,4 @@ void quitCommand(const std::vector<std::string> params, Client &sender) {
   sender.quit();
 
   std::cout << "Client disconnected" << std::endl;
-
-  return;
 }

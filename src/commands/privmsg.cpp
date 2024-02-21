@@ -1,29 +1,29 @@
 #include "Channel.hpp"
 #include "Client.hpp"
+#include "REPLIES.hpp"
 #include "Server.hpp"
 #include <string>
 
 void privmsgCommand(const std::vector<std::string> params, Client &sender) {
   if (params.size() < 1) {
-    sender.send("411 ERR_NORECIPIENT :No recipient given (PRIVMSG)");
+    sender.send(ERR_NORECIPIENT(sender.nickname));
     return;
   }
 
   if (params.size() < 2) {
-    sender.send("412 ERR_NOTEXTTOSEND :No text to send");
+    sender.send(ERR_NOTEXTTOSEND(sender.nickname));
     return;
   }
 
   if (params[0][0] == '#') {
     Channel *channel = sender.server().getChannel(params[0].substr(1));
     if (!channel) {
-      sender.send("401 ERR_NOSUCHNICK " + params[0] + " :No such nick/channel");
+      sender.send(ERR_NOSUCHNICK(sender.nickname, params[0]));
       return;
     }
 
     if (!channel->hasMember(sender)) {
-      sender.send("404 ERR_CANNOTSENDTOCHAN " + params[0] +
-                  " :Cannot send to channel");
+      sender.send(ERR_CANNOTSENDTOCHAN(sender.nickname, params[0]));
       return;
     }
 
@@ -35,14 +35,11 @@ void privmsgCommand(const std::vector<std::string> params, Client &sender) {
     Client *client = sender.server().getClient(params[0]);
 
     if (!client) {
-      sender.send("401 ERR_NOSUCHNICK " + params[0] + " :No such nick/channel");
+      sender.send(ERR_NOSUCHNICK(sender.nickname, params[0]));
       return;
     }
 
-    client->send("PRIVMSG " + params[0] + " :" + params[1]);
     client->send(":" + sender.nickname + "!" + sender.username + "@" +
                  sender.hostname + " PRIVMSG " + params[0] + " :" + params[1]);
   }
-
-  return;
 }

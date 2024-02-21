@@ -1,7 +1,7 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "Message.hpp"
-#include "REPLIES.h"
+#include "REPLIES.hpp"
 #include "Server.hpp"
 #include <exception>
 #include <iostream>
@@ -70,7 +70,7 @@ void Client::joinChannel(const std::string name, const std::string &key) {
 
   if (channel) {
     // TODO: Reject if the client is already is not invited
-    if (channel->mode == ChannelMode::KEY_CHANNEL && key != key) {
+    if (channel->mode == KEY_CHANNEL && key != key) {
       throw std::exception();
       send(ERR_BADCHANNELKEY(nickname, name));
       return;
