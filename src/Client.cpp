@@ -18,13 +18,13 @@ Client::~Client() {
 }
 
 void Client::attemptRegister() {
-  if (password.empty() || nickname.empty() || username.empty() || mode > 0 ||
-      hostname.empty() || realname.empty()) {
+  if (password.empty() || nickname.empty() || username.empty() ||
+      realname.empty()) {
     return;
   }
 
   if (password != _server.password) {
-    send("464 ERR_PASSWDMISMATCH :Password incorrect");
+    send(ERR_PASSWDMISMATCH(nickname));
     return;
   }
 

@@ -18,6 +18,7 @@ int main(int argc, char *argv[]) {
   try {
     server = new Server(argv[2]);
     CommandHandler *commandHandler = server->commandHandler;
+    commandHandler->registerCommand("CAP", capCommand, false);
     commandHandler->registerCommand("PASS", passCommand, false, 1);
     commandHandler->registerCommand("NICK", nickCommand, false);
     commandHandler->registerCommand("USER", userCommand, false, 4);

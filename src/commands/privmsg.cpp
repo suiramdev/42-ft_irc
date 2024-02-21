@@ -31,6 +31,7 @@ void privmsgCommand(const std::vector<std::string> params, Client &sender) {
                       sender.hostname + " PRIVMSG " + params[0] + " :" +
                       params[1],
                   sender);
+    // BUG: The params[1] get duplicated in the message
   } else {
     Client *client = sender.server().getClient(params[0]);
 
