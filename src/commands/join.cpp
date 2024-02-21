@@ -1,5 +1,6 @@
 #include "Channel.hpp"
 #include "Client.hpp"
+#include "REPLIES.hpp"
 #include "Server.hpp"
 #include <sstream>
 #include <string>
@@ -15,9 +16,12 @@ void joinCommand(const std::vector<std::string> params, Client &sender) {
   std::string channelName;
   std::string channelKey;
   while (std::getline(channelsNameStream, channelName, ',')) {
-    if (channelName[0] == '#') {
-      channelName = channelName.substr(1);
+    if (channelName[0] != '#') {
+      sender.send(ERR_BADCHANMASK(channelName));
+      continue;
     }
+
+    channelName = channelName.substr(1);
 
     if (!std::getline(channelsKeyStream, channelKey, ',')) {
       sender.joinChannel(channelName);

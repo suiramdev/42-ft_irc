@@ -54,3 +54,5 @@
 
 #define ERR_BADCHANNELKEY(clientNickname, channelName)                         \
   "475 " + clientNickname + " " + channelName + " :Cannot join channel (+k)"
+
+#define ERR_BADCHANMASK(channelName) "476 " + channelName + " :Bad Channel Mask"
