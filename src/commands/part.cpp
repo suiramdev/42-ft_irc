@@ -12,6 +12,10 @@ void partCommand(const std::vector<std::string> params, Client &sender) {
       channelName = channelName.substr(1);
     }
 
-    sender.partChannel(channelName);
+    if (params.size() > 1) {
+      sender.partChannel(channelName, params[1]);
+    } else {
+      sender.partChannel(channelName);
+    }
   }
 }

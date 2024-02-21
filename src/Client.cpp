@@ -65,7 +65,7 @@ ssize_t Client::read(MessageData &messageData) {
   return bytesRead;
 }
 
-void Client::joinChannel(const std::string name, const std::string &key) {
+void Client::joinChannel(const std::string &name, const std::string &key) {
   Channel *channel = _server.getChannel(name);
 
   if (channel) {
@@ -87,7 +87,7 @@ void Client::joinChannel(const std::string name, const std::string &key) {
   // TODO: Send JOIN message to channel, and topic, ...
 }
 
-void Client::partChannel(const std::string name) {
+void Client::partChannel(const std::string &name, const std::string &reason) {
   if (!_server.getChannel(name)) {
     send(ERR_NOSUCHCHANNEL(nickname, name));
     return;
@@ -98,9 +98,15 @@ void Client::partChannel(const std::string name) {
     return;
   }
 
-  _channels[name]->send(":" + nickname + "!" + username + "@" + hostname +
-                            " PART #" + name,
-                        *this);
+  if (reason.empty()) {
+    _channels[name]->send(":" + nickname + "!" + username + "@" + hostname +
+                              " PART #" + name,
+                          *this);
+  } else {
+    _channels[name]->send(":" + nickname + "!" + username + "@" + hostname +
+                              " PART #" + name + " :" + reason,
+                          *this);
+  }
   _channels[name]->removeMember(*this);
   _channels.erase(name);
 }

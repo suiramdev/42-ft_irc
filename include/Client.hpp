@@ -70,14 +70,14 @@ public:
    * @param channel The channel to join
    * @param key The key to use, if the channel is password protected
    */
-  void joinChannel(const std::string name, const std::string &key = "");
+  void joinChannel(const std::string &name, const std::string &key = "");
 
   /**
    * @brief Part a channel
    *
    * @param channel The channel to part
    */
-  void partChannel(const std::string name);
+  void partChannel(const std::string &name, const std::string &reason = "");
 
   /**
    * @brief Disconnect the client
