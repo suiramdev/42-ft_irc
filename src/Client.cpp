@@ -98,7 +98,9 @@ void Client::partChannel(const std::string name) {
     return;
   }
 
-  // TODO: Send PART message to channel
+  _channels[name]->send(":" + nickname + "!" + username + "@" + hostname +
+                            " PART #" + name,
+                        *this);
   _channels[name]->removeMember(*this);
   _channels.erase(name);
 }

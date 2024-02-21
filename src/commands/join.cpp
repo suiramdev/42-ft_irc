@@ -1,16 +1,10 @@
 #include "Channel.hpp"
 #include "Client.hpp"
-#include "REPLIES.hpp"
 #include "Server.hpp"
 #include <sstream>
 #include <string>
 
 void joinCommand(const std::vector<std::string> params, Client &sender) {
-  if (params.size() < 1) {
-    sender.send(ERR_NEEDMOREPARAMS(sender.nickname, "JOIN"));
-    return;
-  }
-
   if (params[0] == "0") {
     // TODO: Leave all channels
     return;
@@ -31,6 +25,4 @@ void joinCommand(const std::vector<std::string> params, Client &sender) {
       sender.joinChannel(channelName, channelKey);
     }
   }
-
-  return;
 }

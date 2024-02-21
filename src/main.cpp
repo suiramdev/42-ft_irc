@@ -24,6 +24,7 @@ int main(int argc, char *argv[]) {
     commandHandler->registerCommand("USER", userCommand, false, 4);
     commandHandler->registerCommand("PING", pingCommand, true, 1);
     commandHandler->registerCommand("JOIN", joinCommand, true, 1);
+    commandHandler->registerCommand("PART", partCommand, true, 1);
     commandHandler->registerCommand("QUIT", quitCommand);
     commandHandler->registerCommand("PRIVMSG", privmsgCommand);
     server->listen(atoi(argv[1]));
