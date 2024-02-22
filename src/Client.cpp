@@ -13,7 +13,9 @@
 Client::Client(Server &server, int fd)
     : _server(server), _fd(fd), _bufferPos(0), _registered(false),
       negotiating(false), password(""), nickname(""), username(""), mode(-1),
-      hostname(""), realname("") {}
+      hostname(""), realname("") {
+  memset(_buffer, 0, BUFFER_SIZE);
+}
 
 Client::~Client() {
   if (_fd > 0) {
@@ -46,7 +48,7 @@ void Client::send(const std::string &message) {
 
 size_t Client::read(MessageData &messageData) {
   size_t carriageReturnPos = std::string(_buffer).find("\r\n", _bufferPos);
-  size_t bytesRead;
+  size_t bytesRead = 0;
 
   if (carriageReturnPos == std::string::npos) {
     _bufferPos = 0;
