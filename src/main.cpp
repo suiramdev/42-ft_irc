@@ -2,6 +2,7 @@
 #include "Server.hpp"
 #include "commands.hpp"
 #include "utils/Logger.hpp"
+#include <cstdlib>
 #include <fcntl.h>
 #include <iostream>
 #include <netinet/in.h>

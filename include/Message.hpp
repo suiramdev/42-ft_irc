@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 typedef struct {
   std::string prefix;

@@ -4,6 +4,7 @@
 #include "CommandHandler.hpp"
 #include "Message.hpp"
 #include "utils/Logger.hpp"
+#include <errno.h>
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -59,7 +60,7 @@ void Server::bind(int port) {
     throw SocketException("bind");
   }
 
-  Logger::info("Server bound to port " + std::to_string(port));
+  Logger::info("Server bound to port");
 }
 
 Client *Server::addClient(int fd) {
@@ -69,7 +70,7 @@ Client *Server::addClient(int fd) {
 
   struct pollfd pfd;
   pfd.fd = fd;
-  pfd.events = POLL_IN;
+  pfd.events = POLLIN;
   pfd.revents = 0;
   _pfds.push_back(pfd);
 
@@ -87,7 +88,7 @@ Client *Server::getClient(std::string nickname) {
     }
   }
 
-  return nullptr;
+  return NULL;
 }
 
 void Server::removeClient(int fd) {
@@ -123,7 +124,7 @@ void Server::handle() {
     int poll_count = poll(_pfds.data(), _pfds.size(), 100); // Wait for events
     if (poll_count > 0) { // Events must be handled
       for (size_t i = 0; i < _pfds.size(); i++) {
-        if (_pfds[i].revents & POLL_IN) { // A client has sent a message
+        if (_pfds[i].revents & POLLIN) { // A client has sent a message
           try {
             MessageData messageData;
 
@@ -152,7 +153,7 @@ void Server::listen(int port) {
     throw SocketException("listen");
   }
 
-  Logger::info("Server listening on port " + std::to_string(port));
+  Logger::info("Server listening on port");
 
   handle();
 }
@@ -177,7 +178,7 @@ Channel *Server::addChannel(std::string name, std::string key) {
 
 Channel *Server::getChannel(std::string name) {
   if (_channels.find(name) == _channels.end()) {
-    return nullptr;
+    return NULL;
   }
 
   return _channels[name];

@@ -63,7 +63,7 @@ public:
    * if an error occurred
    * @throw IRCComplianceException If the message is not IRC compliant
    */
-  ssize_t read(MessageData &messageData);
+  size_t read(MessageData &messageData);
 
   /**
    * @brief Join a channel

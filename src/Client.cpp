@@ -6,6 +6,7 @@
 #include "Server.hpp"
 #include "utils/Logger.hpp"
 #include <exception>
+#include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -41,7 +42,7 @@ void Client::send(const std::string &message) {
   Logger::out(message);
 }
 
-ssize_t Client::read(MessageData &messageData) {
+size_t Client::read(MessageData &messageData) {
   size_t carriageReturnPos = std::string(_buffer).find("\r\n", _bufferPos);
   size_t bytesRead;
 
