@@ -11,7 +11,9 @@
 #include <unistd.h>
 
 Client::Client(Server &server, int fd)
-    : _server(server), _fd(fd), _bufferPos(0), mode(-1) {}
+    : _server(server), _fd(fd), _bufferPos(0), _registered(false),
+      negotiating(false), password(""), nickname(""), username(""), mode(-1),
+      hostname(""), realname("") {}
 
 Client::~Client() {
   if (_fd > 0) {
