@@ -20,7 +20,7 @@ SRCS				:= $(shell find $(SRC_DIR) -type f -name '*.cpp')
 OBJS				:= $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 
 CXX					:= c++
-CFLAGS			:= -Wall -Wextra -Werror -std=c++98 -I$(INC_DIR)
+CFLAGS			:= -g3 -Wall -Wextra -Werror -std=c++98 -I$(INC_DIR)
 
 RM					:= rm -f
 MAKEFLAGS		+= --silent --no-print-directory
