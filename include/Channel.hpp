@@ -33,9 +33,9 @@ public:
 
   const std::string &name() const { return _name; }
 
-  const std::map<int, Client *> &members() const { return _members; }
+  std::map<int, Client *> &members() { return _members; }
 
-  const std::map<int, Client *> &operators() const { return _operators; }
+  std::map<int, Client *> &operators() { return _operators; }
 
   /**
    * @brief Add a member to the channel

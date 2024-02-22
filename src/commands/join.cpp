@@ -7,7 +7,11 @@
 
 void joinCommand(const std::vector<std::string> params, Client &sender) {
   if (params[0] == "0") {
-    // TODO: Leave all channels
+    for (std::map<std::string, Channel *>::iterator it =
+             sender.channels().begin();
+         it != sender.channels().end(); ++it) {
+      sender.partChannel(it->first);
+    }
     return;
   }
 

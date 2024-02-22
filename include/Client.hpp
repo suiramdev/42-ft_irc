@@ -34,7 +34,7 @@ public:
 
   Server &server() const { return _server; }
 
-  const std::map<std::string, Channel *> &channels() const { return _channels; }
+  std::map<std::string, Channel *> &channels() { return _channels; }
 
   /**
    * @brief Attempt to register the client
