@@ -50,7 +50,7 @@ size_t Client::read(MessageData &messageData) {
 
   if (carriageReturnPos == std::string::npos) {
     _bufferPos = 0;
-    memset(_buffer, 0, BUFFER_SIZE); // NOTE: Optimizable
+    memset(_buffer, 0, BUFFER_SIZE);
     bytesRead = recv(_fd, _buffer, BUFFER_SIZE, 0);
     if (bytesRead <= 0)
       return bytesRead;
