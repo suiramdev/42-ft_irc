@@ -76,9 +76,17 @@ public:
   /**
    * @brief Part a channel
    *
-   * @param channel The channel to part
+   * @param name The channel name to part
+   * @param reason The reason for parting
    */
   void partChannel(const std::string &name, const std::string &reason = "");
+
+  /**
+   * @brief Kick the client from a channel
+   *
+   * @param name The channel name to kick from
+   */
+  void kickChannel(const std::string &name);
 
   /**
    * @brief Disconnect the client

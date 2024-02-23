@@ -34,6 +34,10 @@
 #define ERR_NICKNAMEINUSE(clientNickname, nickname)                            \
   "433 " + clientNickname + " " + nickname + " :Nickname is already in use"
 
+#define ERR_USERNOTINCHANNEL(clientNickname, nickname, channelName)            \
+  "441 " + clientNickname + " " + nickname + " " + channelName +               \
+      " :They aren't on that channel"
+
 #define ERR_NOTONCHANNEL(clientNickname, channelName)                          \
   "442 " + clientNickname + " " + channelName + " :You're not on that channel"
 
@@ -56,3 +60,6 @@
   "475 " + clientNickname + " " + channelName + " :Cannot join channel (+k)"
 
 #define ERR_BADCHANMASK(channelName) "476 " + channelName + " :Bad Channel Mask"
+
+#define ERR_CHANOPRIVSNEEDED(clientNickname, channelName)                      \
+  "482 " + clientNickname + " " + channelName + " :You're not channel operator"

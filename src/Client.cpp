@@ -96,9 +96,8 @@ void Client::joinChannel(const std::string &name, const std::string &key) {
   }
 
   _channels[name] = channel;
-  channel->send(":" + nickname + "!" + username + "@" + hostname + " JOIN #" +
-                    name,
-                *this);
+  channel->send(":" + nickname + "!" + username + "@" + hostname + " JOIN " +
+                name);
 }
 
 void Client::partChannel(const std::string &name, const std::string &reason) {
@@ -114,13 +113,16 @@ void Client::partChannel(const std::string &name, const std::string &reason) {
 
   if (reason.empty()) {
     _channels[name]->send(":" + nickname + "!" + username + "@" + hostname +
-                              " PART #" + name,
-                          *this);
+                          " PART " + name);
   } else {
     _channels[name]->send(":" + nickname + "!" + username + "@" + hostname +
-                              " PART #" + name + " :" + reason,
-                          *this);
+                          " PART " + name + " :" + reason);
   }
+  _channels[name]->removeMember(*this);
+  _channels.erase(name);
+}
+
+void Client::kickChannel(const std::string &name) {
   _channels[name]->removeMember(*this);
   _channels.erase(name);
 }

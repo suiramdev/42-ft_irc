@@ -25,8 +25,6 @@ void joinCommand(const std::vector<std::string> params, Client &sender) {
       continue;
     }
 
-    channelName = channelName.substr(1);
-
     if (!std::getline(channelsKeyStream, channelKey, ',')) {
       sender.joinChannel(channelName);
     } else {
