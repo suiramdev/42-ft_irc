@@ -98,6 +98,11 @@ void Client::joinChannel(const std::string &name, const std::string &key) {
   _channels[name] = channel;
   channel->send(":" + nickname + "!" + username + "@" + hostname + " JOIN " +
                 name);
+  if (channel->topic.empty()) {
+    send(RPL_NOTOPIC(nickname, name));
+  } else {
+    send(RPL_TOPIC(nickname, name, channel->topic));
+  }
 }
 
 void Client::partChannel(const std::string &name, const std::string &reason) {

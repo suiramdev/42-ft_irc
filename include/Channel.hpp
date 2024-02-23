@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ctime>
 #include <map>
 #include <string>
 
@@ -24,6 +25,8 @@ public:
   ChannelMode mode;
   std::string key;
   std::string topic;
+  Client *topicSetter;
+  std::time_t topicSetTime;
   unsigned long maxMembers;
 
   Channel(Server &server, std::string name);

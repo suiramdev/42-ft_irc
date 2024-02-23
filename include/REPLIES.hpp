@@ -3,6 +3,16 @@
 #define RPL_WELCOME(clientNickname)                                            \
   "001 " + clientNickname + " :Welcome to the Internet Relay Network "
 
+#define RPL_NOTOPIC(clientNickname, channelName)                               \
+  "331 " + clientNickname + " " + channelName + " :No topic is set"
+
+#define RPL_TOPIC(clientNickname, channelName, topic)                          \
+  "332 " + clientNickname + " " + channelName + " :" + topic
+
+#define RPL_TOPICWHOTIME(clientNickname, channelName, topic, setter, time)     \
+  "333 " + clientNickname + " " + channelName + " " + setter + " " + time +    \
+      " :" + topic
+
 #define ERR_NOSUCHNICK(clientNickname, nickname)                               \
   "401 " + clientNickname + " " + nickname + " :No such nick/channel"
 

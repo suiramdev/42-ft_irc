@@ -5,7 +5,7 @@
 
 Channel::Channel(Server &server, std::string name)
     : _server(server), _name(name), mode(BAN_CHANNEL), key(""), topic(""),
-      maxMembers(10) {}
+      topicSetter(NULL), topicSetTime(0), maxMembers(10) {}
 
 Channel::~Channel() {}
 
