@@ -16,7 +16,7 @@ void privmsgCommand(const std::vector<std::string> params, Client &sender) {
   }
 
   if (params[0][0] == '#') {
-    Channel *channel = sender.server().getChannel(params[0].substr(1));
+    Channel *channel = sender.server().getChannel(params[0]);
     if (!channel) {
       sender.send(ERR_NOSUCHNICK(sender.nickname, params[0]));
       return;
