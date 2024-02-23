@@ -1,7 +1,9 @@
 #include "CommandHandler.hpp"
 #include "Server.hpp"
 #include "commands.hpp"
+#include "signals.hpp"
 #include "utils/Logger.hpp"
+#include <csignal>
 #include <cstdlib>
 #include <fcntl.h>
 #include <iostream>
@@ -14,6 +16,8 @@ int main(int argc, char *argv[]) {
     std::cerr << "Usage: " << argv[0] << " <port> <password>" << std::endl;
     return EXIT_FAILURE;
   }
+
+  signal(SIGINT, signalHandler);
 
   Server *server = NULL;
 

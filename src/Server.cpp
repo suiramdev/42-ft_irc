@@ -3,10 +3,13 @@
 #include "Client.hpp"
 #include "CommandHandler.hpp"
 #include "Message.hpp"
+#include "signals.hpp"
 #include "utils/Logger.hpp"
+#include <csignal>
 #include <errno.h>
 #include <fcntl.h>
 #include <netinet/in.h>
+#include <sstream>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -60,7 +63,10 @@ void Server::bind(int port) {
     throw SocketException("bind");
   }
 
-  Logger::info("Server bound to port");
+  std::stringstream ss;
+  ss << "Server bound to port " << port;
+
+  Logger::info(ss.str());
 }
 
 Client *Server::addClient(int fd) {
@@ -112,6 +118,10 @@ void Server::handle() {
   fcntl(_fd, F_SETFL, O_NONBLOCK);
 
   while (true) {
+    if (receivedSignal == SIGINT) {
+      break;
+    }
+
     // Accept any incoming connections
     int client_fd = accept(_fd, NULL, NULL);
     if (client_fd < 0 && errno != EWOULDBLOCK && errno != EAGAIN) {
@@ -153,7 +163,10 @@ void Server::listen(int port) {
     throw SocketException("listen");
   }
 
-  Logger::info("Server listening on port");
+  std::stringstream ss;
+  ss << "Server listening on port " << port;
+
+  Logger::info(ss.str());
 
   handle();
 }
