@@ -28,9 +28,9 @@ void kickCommand(const std::vector<std::string> params, Client &sender) {
     return;
   }
 
-  Client *target = sender.server().getClient(params[1]);
+  Client *target = channel->getMember(params[1]);
 
-  if (!channel->hasMember(*target)) {
+  if (!target) {
     sender.send(
         ERR_USERNOTINCHANNEL(sender.nickname, target->nickname, params[0]));
     return;

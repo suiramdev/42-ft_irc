@@ -22,6 +22,16 @@ bool Channel::addMember(Client &client, bool privileged) {
   return true;
 }
 
+Client *Channel::getMember(const std::string &name) {
+  for (std::map<int, Client *>::iterator it = _members.begin();
+       it != _members.end(); ++it) {
+    if (it->second->nickname == name) {
+      return it->second;
+    }
+  }
+  return NULL;
+}
+
 bool Channel::hasMember(Client &client) {
   return _members.find(client.fd()) != _members.end();
 }

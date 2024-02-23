@@ -47,6 +47,14 @@ public:
   bool addMember(Client &client, bool privileged = false);
 
   /**
+   * @brief Get a member of the channel
+   *
+   * @param name The name of the client
+   * @return The client
+   */
+  Client *getMember(const std::string &name);
+
+  /**
    * @brief Check if a client is a member of the channel
    *
    * @param client The client to check
