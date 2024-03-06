@@ -80,11 +80,20 @@ void Client::joinChannel(const std::string &name, const std::string &key) {
   Channel *channel = _server.getChannel(name);
 
   if (channel) {
-    // TODO: Reject if the client is already is not invited
-    if (channel->mode == KEY_CHANNEL && key != key) {
+    if (channel->modes & LIMIT_MODE &&
+        channel->members().size() >= channel->maxMembers) {
+      send(ERR_CHANNELISFULL(nickname, name));
       throw std::exception();
+    }
+
+    if (channel->modes & INVITE_MODE) {
+      send(ERR_INVITEONLYCHAN(nickname, name));
+      throw std::exception();
+    }
+
+    if (channel->modes & KEY_MODE && channel->key != key) {
       send(ERR_BADCHANNELKEY(nickname, name));
-      return;
+      throw std::exception();
     }
 
     if (channel->addMember(*this, false)) {

@@ -66,6 +66,9 @@
 #define ERR_CHANNELISFULL(clientNickname, channelName)                         \
   "471 " + clientNickname + " " + channelName + " :Cannot join channel (+l)"
 
+#define ERR_INVITEONLYCHAN(clientNickname, channelName)                        \
+  "473 " + clientNickname + " " + channelName + " :Cannot join channel (+i)"
+
 #define ERR_BADCHANNELKEY(clientNickname, channelName)                         \
   "475 " + clientNickname + " " + channelName + " :Cannot join channel (+k)"
 

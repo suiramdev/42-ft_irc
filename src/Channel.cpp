@@ -4,13 +4,13 @@
 #include "Server.hpp"
 
 Channel::Channel(Server &server, std::string name)
-    : _server(server), _name(name), mode(BAN_CHANNEL), key(""), topic(""),
+    : _server(server), _name(name), modes(NONE_MODE), key(""), topic(""),
       topicSetter(NULL), topicSetTime(0), maxMembers(10) {}
 
 Channel::~Channel() {}
 
 bool Channel::addMember(Client &client, bool privileged) {
-  if (mode == LIMIT_CHANNEL && _members.size() >= maxMembers) {
+  if (modes == LIMIT_MODE && _members.size() >= maxMembers) {
     client.send(ERR_CHANNELISFULL(client.nickname, _name));
     return false;
   }

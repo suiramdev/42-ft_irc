@@ -5,10 +5,11 @@
 #include <string>
 
 typedef enum {
-  BAN_CHANNEL = 0x1,
-  LIMIT_CHANNEL = 0x2,
-  INVITE_ONLY = 0x3,
-  KEY_CHANNEL = 0x4,
+  NONE_MODE = 0,
+  LIMIT_MODE = 1,
+  INVITE_MODE = 2,
+  KEY_MODE = 3,
+  TOPIC_MODE = 4,
 } ChannelMode;
 
 class Server;
@@ -22,7 +23,7 @@ private:
   std::map<int, Client *> _operators;
 
 public:
-  ChannelMode mode;
+  int modes;
   std::string key;
   std::string topic;
   Client *topicSetter;

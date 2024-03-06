@@ -17,7 +17,8 @@ void topicCommand(const std::vector<std::string> params, Client &sender) {
     return;
   }
 
-  if (!channel->isOperator(sender)) { // TODO: Exception for topic mode set
+  if (channel->modes & ~TOPIC_MODE &&
+      !channel->isOperator(sender)) { // TODO: Exception for topic mode set
     sender.send(ERR_CHANOPRIVSNEEDED(sender.nickname, params[0]));
     return;
   }
