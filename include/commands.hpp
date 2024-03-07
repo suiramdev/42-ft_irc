@@ -16,3 +16,4 @@ void privmsgCommand(const std::vector<std::string> params, Client &sender);
 void kickCommand(const std::vector<std::string> params, Client &sender);
 void topicCommand(const std::vector<std::string> params, Client &sender);
 void modeCommand(const std::vector<std::string> params, Client &sender);
+void inviteCommand(const std::vector<std::string> params, Client &sender);

@@ -86,7 +86,7 @@ void Client::joinChannel(const std::string &name, const std::string &key) {
       throw std::exception();
     }
 
-    if (channel->modes & INVITE_MODE) {
+    if (channel->modes & INVITE_MODE && !channel->isInvited(*this)) {
       send(ERR_INVITEONLYCHAN(nickname, name));
       throw std::exception();
     }

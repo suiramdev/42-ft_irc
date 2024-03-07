@@ -21,6 +21,7 @@ private:
   const std::string _name;
   std::map<int, Client *> _members;
   std::map<int, Client *> _operators;
+  std::map<int, Client *> _invited;
 
 public:
   int modes;
@@ -74,12 +75,19 @@ public:
   void removeMember(Client &client);
 
   /**
-   * @brief Check if a client is an operator of the channel
+   * @brief Invite a member to the channel
+   *
+   * @param client The client to invite
+   */
+  void inviteMember(Client &client);
+
+  /**
+   * @brief Check if a client is invited to the channel
    *
    * @param client The client to check
-   * @return true if the client is an operator, false otherwise
+   * @return true if the client is invited, false otherwise
    */
-  bool isOperator(Client &client);
+  bool isInvited(Client &client);
 
   /**
    * @brief Set a client as an operator of the channel
@@ -88,6 +96,14 @@ public:
    * @param privileged Whether the client should be privileged
    */
   void setOperator(Client &client, bool privileged = true);
+
+  /**
+   * @brief Check if a client is an operator of the channel
+   *
+   * @param client The client to check
+   * @return true if the client is an operator, false otherwise
+   */
+  bool isOperator(Client &client);
 
   /**
    * @brief Send a message to the channel

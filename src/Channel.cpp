@@ -36,10 +36,6 @@ bool Channel::hasMember(Client &client) {
   return _members.find(client.fd()) != _members.end();
 }
 
-bool Channel::isOperator(Client &client) {
-  return _operators.find(client.fd()) != _operators.end();
-}
-
 void Channel::removeMember(Client &client) {
   _members.erase(client.fd());
   _operators.erase(client.fd());
@@ -47,6 +43,12 @@ void Channel::removeMember(Client &client) {
   if (_members.empty()) { // If the channel is empty, remove it from the server
     _server.removeChannel(_name);
   }
+}
+
+void Channel::inviteMember(Client &client) { _invited[client.fd()] = &client; }
+
+bool Channel::isInvited(Client &client) {
+  return _invited.find(client.fd()) != _invited.end();
 }
 
 void Channel::setOperator(Client &client, bool privileged) {
@@ -59,6 +61,10 @@ void Channel::setOperator(Client &client, bool privileged) {
   } else {
     _operators.erase(client.fd());
   }
+}
+
+bool Channel::isOperator(Client &client) {
+  return _operators.find(client.fd()) != _operators.end();
 }
 
 void Channel::send(const std::string &message) {

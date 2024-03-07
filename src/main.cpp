@@ -36,6 +36,7 @@ int main(int argc, char *argv[]) {
     commandHandler->registerCommand("KICK", kickCommand, false, 2);
     commandHandler->registerCommand("TOPIC", topicCommand, false, 1);
     commandHandler->registerCommand("MODE", modeCommand, false, 1);
+    commandHandler->registerCommand("INVITE", inviteCommand, false, 2);
     server->listen(atoi(argv[1]));
   } catch (std::exception &e) {
     Logger::error(e.what());

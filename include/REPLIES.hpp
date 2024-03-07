@@ -13,6 +13,9 @@
   "333 " + clientNickname + " " + channelName + " " + setter + " " + time +    \
       " :" + topic
 
+#define RPL_INVITING(clientNickname, nickname, channelName)                    \
+  "341 " + clientNickname + " " + nickname + " " + channelName
+
 #define ERR_NOSUCHNICK(clientNickname, nickname)                               \
   "401 " + clientNickname + " " + nickname + " :No such nick/channel"
 
@@ -50,6 +53,10 @@
 
 #define ERR_NOTONCHANNEL(clientNickname, channelName)                          \
   "442 " + clientNickname + " " + channelName + " :You're not on that channel"
+
+#define ERR_USERONCHANNEL(clientNickname, nickname, channelName)               \
+  "443 " + clientNickname + " " + nickname + " " + channelName +               \
+      " :is already on channel"
 
 #define ERR_NOTREGISTERED(clientNickname)                                      \
   "451 " + clientNickname + " :You have not registered"
