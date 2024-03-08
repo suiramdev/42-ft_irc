@@ -57,14 +57,11 @@ size_t Client::read(MessageData &messageData) {
   if (carriageReturnPos == std::string::npos) {
     _bufferPos += bytesRead;
     if (_bufferPos >= BUFFER_SIZE) {
-      std::cout << _buffer << std::endl;
       _bufferPos = 0;
       memset(_buffer, 0, BUFFER_SIZE);
       send(ERR_INPUTTOOLONG(nickname));
       throw IRCComplianceException("Message too long");
     }
-    // NOTE: This is a bit of a hack
-    std::cout << _buffer << std::endl;
     throw IRCComplianceException("Message incomplete");
   }
 

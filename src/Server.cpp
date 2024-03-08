@@ -147,7 +147,7 @@ void Server::handle() {
               removeClient(_pfds[i].fd);
             }
           } catch (const std::exception &e) {
-            Logger::error(e.what());
+            Logger::warning(e.what());
           }
         }
       }
