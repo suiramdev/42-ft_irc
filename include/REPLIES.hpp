@@ -35,6 +35,9 @@
 #define ERR_NOTEXTTOSEND(clientNickname)                                       \
   "412 " + clientNickname + " :No text to send"
 
+#define ERR_INPUTTOOLONG(clientNickname)                                       \
+  "414 " + clientNickname + " :Input line too long"
+
 #define ERR_UNKNOWNCOMMAND(clientNickname, commandName)                        \
   "421 " + clientNickname + " " + commandName + " :Unknown command"
 

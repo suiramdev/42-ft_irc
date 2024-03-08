@@ -5,6 +5,7 @@
 #include "REPLIES.hpp"
 #include "Server.hpp"
 #include "utils/Logger.hpp"
+#include <cstring>
 #include <exception>
 #include <string.h>
 #include <sys/socket.h>
@@ -47,26 +48,33 @@ void Client::send(const std::string &message) {
 }
 
 size_t Client::read(MessageData &messageData) {
-  size_t carriageReturnPos = std::string(_buffer).find("\r\n", _bufferPos);
-  size_t bytesRead = 0;
+  size_t bytesRead =
+      recv(_fd, _buffer + _bufferPos, BUFFER_SIZE - _bufferPos, 0);
+  if (bytesRead <= 0)
+    return bytesRead;
 
+  size_t carriageReturnPos = std::string(_buffer).find("\r\n");
   if (carriageReturnPos == std::string::npos) {
-    _bufferPos = 0;
-    memset(_buffer, 0, BUFFER_SIZE);
-    bytesRead = recv(_fd, _buffer, BUFFER_SIZE, 0);
-    if (bytesRead <= 0)
-      return bytesRead;
+    _bufferPos += bytesRead;
+    if (_bufferPos >= BUFFER_SIZE) {
+      std::cout << _buffer << std::endl;
+      _bufferPos = 0;
+      memset(_buffer, 0, BUFFER_SIZE);
+      send(ERR_INPUTTOOLONG(nickname));
+      throw IRCComplianceException("Message too long");
+    }
+    // NOTE: This is a bit of a hack
+    std::cout << _buffer << std::endl;
+    throw IRCComplianceException("Message incomplete");
   }
 
-  carriageReturnPos = std::string(_buffer).find("\r\n", _bufferPos);
-  if (carriageReturnPos == std::string::npos)
-    throw IRCComplianceException("Missing carriage return");
-  std::string message =
-      std::string(_buffer).substr(_bufferPos, carriageReturnPos - _bufferPos);
+  std::string message = std::string(_buffer).substr(0, carriageReturnPos);
   messageData = parseMessage(message);
   Logger::in(message);
-  bytesRead = carriageReturnPos - _bufferPos;
-  _bufferPos = carriageReturnPos + 2; // We add 2 to skip the carriage return
+  std::string rest = std::string(_buffer).substr(carriageReturnPos + 2);
+  memset(_buffer, 0, BUFFER_SIZE);
+  strncpy(_buffer, rest.c_str(), rest.size());
+  _bufferPos = rest.size();
 
   return bytesRead;
 }
