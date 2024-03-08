@@ -22,8 +22,12 @@ void modeCommand(const std::vector<std::string> params, Client &sender) {
     return;
   }
 
+  if (params[1][0] != '+' && params[1][0] != '-') {
+    sender.send(ERR_UNKNOWNMODE(sender.nickname, params[1][0]));
+    return;
+  }
+
   bool add = params[1][0] == '+';
-  channel->modes |= INVITE_MODE;
   for (std::string::size_type i = 1; i < params[1].length(); ++i) {
     switch (params[1][i]) {
     case 'i': // Allow only invited members to join
@@ -64,9 +68,23 @@ void modeCommand(const std::vector<std::string> params, Client &sender) {
         channel->modes &= ~TOPIC_MODE;
       }
       break;
-    }
-  }
+    case 'o': {
+      Client *target = channel->getMember(params[2]);
+      if (!target) {
+        sender.send(
+            ERR_USERNOTINCHANNEL(sender.nickname, params[2], params[0]));
+        return;
+      }
 
-  channel->send(":" + sender.nickname + "!" + sender.username + "@" +
-                sender.hostname + " MODE " + params[0] + " " + params[1]);
+      channel->setOperator(*target, add);
+      break;
+    }
+    default:
+      sender.send(ERR_UNKNOWNMODE(sender.nickname, params[1][i]));
+      break;
+    }
+
+    channel->send(":" + sender.nickname + "!" + sender.username + "@" +
+                  sender.hostname + " MODE " + params[0] + " " + params[1]);
+  }
 }

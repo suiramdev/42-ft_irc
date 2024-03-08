@@ -73,6 +73,9 @@
 #define ERR_CHANNELISFULL(clientNickname, channelName)                         \
   "471 " + clientNickname + " " + channelName + " :Cannot join channel (+l)"
 
+#define ERR_UNKNOWNMODE(clientNickname, mode)                                  \
+  "472 " + clientNickname + " " + mode + " :is unknown mode char to me"
+
 #define ERR_INVITEONLYCHAN(clientNickname, channelName)                        \
   "473 " + clientNickname + " " + channelName + " :Cannot join channel (+i)"
 
