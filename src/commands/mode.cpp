@@ -22,14 +22,13 @@ void modeCommand(const std::vector<std::string> params, Client &sender) {
     return;
   }
 
-  if (params[1][0] != '+' && params[1][0] != '-') {
-    sender.send(ERR_UNKNOWNMODE(sender.nickname, params[1][0]));
-    return;
-  }
-
-  bool add = params[1][0] == '+';
+  bool add = true;
   for (std::string::size_type i = 1; i < params[1].length(); ++i) {
     switch (params[1][i]) {
+    case '+':
+    case '-':
+      add = params[1][i] == '+';
+      break;
     case 'i': // Allow only invited members to join
       if (add) {
         channel->modes |= INVITE_MODE;
