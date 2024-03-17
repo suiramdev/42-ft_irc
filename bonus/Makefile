@@ -10,12 +10,11 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME				:= ircserv
+NAME				:= bot
 
 SRC_DIR     := src
 INC_DIR     := include
 BUILD_DIR		:= .build
-BONUS_DIR		:= bonus
 
 SRCS				:= $(shell find $(SRC_DIR) -type f -name '*.cpp')
 OBJS				:= $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
@@ -38,8 +37,7 @@ $(NAME): $(OBJS)
 	$(CXX) $(CFLAGS) $(OBJS) -o $(NAME)
 	echo "\033[0;32m✓ Compiled $@ successfully\033[0m"
 
-bonus:
-	$(MAKE) -C $(BONUS_DIR)
+bonus: all
 
 clean:
 	echo "→ Removing objects"
