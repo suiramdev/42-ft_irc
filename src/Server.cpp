@@ -131,15 +131,19 @@ void Server::handle() {
     if (poll_count > 0) { // Events must be handled
       for (size_t i = 0; i < _pfds.size(); i++) {
         if (_pfds[i].revents & POLLIN) { // A client has sent a message
-          MessageData messageData;
 
-          ssize_t bytes_read = _clients[_pfds[i].fd]->read(messageData);
-          if (bytes_read > 0) {
-            commandHandler->handleCommand(messageData.command,
-                                          messageData.params,
-                                          *_clients[_pfds[i].fd]);
-          } else if (bytes_read == 0) {
+          ssize_t bytes_read = _clients[_pfds[i].fd]->read();
+          if (bytes_read <= 0) {
             removeClient(_pfds[i].fd);
+            return;
+          }
+
+          std::vector<MessageData> messages =
+              _clients[_pfds[i].fd]->getMessages();
+          for (std::vector<MessageData>::iterator it = messages.begin();
+               it != messages.end(); ++it) {
+            commandHandler->handleCommand(it->command, it->params,
+                                          *_clients[_pfds[i].fd]);
           }
         }
       }

@@ -58,11 +58,16 @@ public:
   /**
    * @brief Read a message from the client
    *
-   * @param messageData The struct to store the message data in
-   * @return The number of bytes read, 0 if the client has disconnected, or -1
-   * if an error occurred
+   * @return The number of bytes read
    */
-  ssize_t read(MessageData &messageData);
+  ssize_t read();
+
+  /**
+   * @brief Get the message from the client buffer
+   *
+   * @return The messages
+   */
+  std::vector<MessageData> getMessages();
 
   /**
    * @brief Join a channel

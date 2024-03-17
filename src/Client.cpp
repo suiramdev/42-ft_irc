@@ -46,29 +46,29 @@ void Client::send(const std::string &message) {
   Logger::out(message);
 }
 
-ssize_t Client::read(MessageData &messageData) {
-  size_t carriageReturn = _message.find("\r\n");
-  if (carriageReturn == std::string::npos) {
-    char buffer[BUFFER_SIZE] = {0};
+ssize_t Client::read() {
+  char buffer[BUFFER_SIZE] = {0};
 
-    ssize_t bytesRead = recv(_fd, buffer, BUFFER_SIZE, 0);
-    if (bytesRead <= 0) {
-      return bytesRead;
-    }
-
+  ssize_t bytes = recv(_fd, buffer, BUFFER_SIZE, 0);
+  if (bytes > 0) {
     _message.append(buffer);
-
-    carriageReturn = _message.find("\r\n");
-    if (carriageReturn == std::string::npos) {
-      return -1;
-    }
   }
 
-  Logger::in(_message.substr(0, carriageReturn));
-  messageData = Message::parse(_message.substr(0, carriageReturn));
-  _message = _message.substr(carriageReturn + 2);
+  return bytes;
+}
 
-  return carriageReturn;
+std::vector<MessageData> Client::getMessages() {
+  std::vector<MessageData> messages;
+
+  size_t carriageReturnPos = _message.find("\r\n");
+  while (carriageReturnPos != std::string::npos) {
+    std::string message = _message.substr(0, carriageReturnPos);
+    _message.erase(0, carriageReturnPos + 2);
+    messages.push_back(Message::parse(message));
+    carriageReturnPos = _message.find("\r\n");
+  }
+
+  return messages;
 }
 
 void Client::joinChannel(const std::string &name, const std::string &key) {
