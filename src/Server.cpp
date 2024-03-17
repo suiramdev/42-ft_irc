@@ -117,11 +117,7 @@ void Server::removeClient(int fd) {
 void Server::handle() {
   fcntl(_fd, F_SETFL, O_NONBLOCK);
 
-  while (true) {
-    if (receivedSignal == SIGINT) {
-      break;
-    }
-
+  while (receivedSignal != SIGINT) {
     // Accept any incoming connections
     int client_fd = accept(_fd, NULL, NULL);
     if (client_fd < 0 && errno != EWOULDBLOCK && errno != EAGAIN) {

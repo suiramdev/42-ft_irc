@@ -51,17 +51,17 @@ ssize_t Client::read(MessageData &messageData) {
   if (carriageReturn == std::string::npos) {
     char buffer[BUFFER_SIZE] = {0};
 
-    ssize_t bytes = recv(_fd, buffer, BUFFER_SIZE, 0);
-    if (bytes <= 0) {
-      return bytes;
+    ssize_t bytesRead = recv(_fd, buffer, BUFFER_SIZE, 0);
+    if (bytesRead <= 0) {
+      return bytesRead;
     }
 
     _message.append(buffer);
-  }
 
-  carriageReturn = _message.find("\r\n");
-  if (carriageReturn == std::string::npos) {
-    return -1;
+    carriageReturn = _message.find("\r\n");
+    if (carriageReturn == std::string::npos) {
+      return -1;
+    }
   }
 
   Logger::in(_message.substr(0, carriageReturn));
