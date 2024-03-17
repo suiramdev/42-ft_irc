@@ -9,14 +9,13 @@
 #include <exception>
 #include <string.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 Client::Client(Server &server, int fd)
-    : _server(server), _fd(fd), _bufferPos(0), _registered(false),
+    : _server(server), _fd(fd), _message(""), _registered(false),
       negotiating(false), password(""), nickname(""), username(""), mode(-1),
-      hostname(""), realname("") {
-  memset(_buffer, 0, BUFFER_SIZE);
-}
+      hostname(""), realname("") {}
 
 Client::~Client() {
   if (_fd > 0) {
@@ -47,33 +46,29 @@ void Client::send(const std::string &message) {
   Logger::out(message);
 }
 
-size_t Client::read(MessageData &messageData) {
-  size_t bytesRead =
-      recv(_fd, _buffer + _bufferPos, BUFFER_SIZE - _bufferPos, 0);
-  if (bytesRead <= 0)
-    return bytesRead;
+ssize_t Client::read(MessageData &messageData) {
+  size_t carriageReturn = _message.find("\r\n");
+  if (carriageReturn == std::string::npos) {
+    char buffer[BUFFER_SIZE] = {0};
 
-  size_t carriageReturnPos = std::string(_buffer).find("\r\n");
-  if (carriageReturnPos == std::string::npos) {
-    _bufferPos += bytesRead;
-    if (_bufferPos >= BUFFER_SIZE) {
-      _bufferPos = 0;
-      memset(_buffer, 0, BUFFER_SIZE);
-      send(ERR_INPUTTOOLONG(nickname));
-      throw IRCComplianceException("Message too long");
+    ssize_t bytes = recv(_fd, buffer, BUFFER_SIZE, 0);
+    if (bytes <= 0) {
+      return bytes;
     }
-    throw IRCComplianceException("Message incomplete");
+
+    _message.append(buffer);
   }
 
-  std::string message = std::string(_buffer).substr(0, carriageReturnPos);
-  messageData = parseMessage(message);
-  Logger::in(message);
-  std::string rest = std::string(_buffer).substr(carriageReturnPos + 2);
-  memset(_buffer, 0, BUFFER_SIZE);
-  strncpy(_buffer, rest.c_str(), rest.size());
-  _bufferPos = rest.size();
+  carriageReturn = _message.find("\r\n");
+  if (carriageReturn == std::string::npos) {
+    return -1;
+  }
 
-  return bytesRead;
+  Logger::in(_message.substr(0, carriageReturn));
+  messageData = Message::parse(_message.substr(0, carriageReturn));
+  _message = _message.substr(carriageReturn + 2);
+
+  return carriageReturn;
 }
 
 void Client::joinChannel(const std::string &name, const std::string &key) {

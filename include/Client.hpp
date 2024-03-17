@@ -5,6 +5,7 @@
 #include "Message.hpp"
 #include <map>
 #include <string>
+#include <sys/types.h>
 
 class Server;
 class Channel;
@@ -13,8 +14,7 @@ class Client {
 private:
   Server &_server;
   int _fd;
-  char _buffer[BUFFER_SIZE];
-  size_t _bufferPos;
+  std::string _message;
   bool _registered;
   std::map<std::string, Channel *> _channels;
 
@@ -61,9 +61,8 @@ public:
    * @param messageData The struct to store the message data in
    * @return The number of bytes read, 0 if the client has disconnected, or -1
    * if an error occurred
-   * @throw IRCComplianceException If the message is not IRC compliant
    */
-  size_t read(MessageData &messageData);
+  ssize_t read(MessageData &messageData);
 
   /**
    * @brief Join a channel
