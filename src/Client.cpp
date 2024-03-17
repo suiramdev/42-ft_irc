@@ -52,6 +52,7 @@ ssize_t Client::read() {
   ssize_t bytes = recv(_fd, buffer, BUFFER_SIZE, 0);
   if (bytes > 0) {
     _message.append(buffer);
+    Logger::in(buffer);
   }
 
   return bytes;
