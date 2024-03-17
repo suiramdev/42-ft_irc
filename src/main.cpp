@@ -19,11 +19,9 @@ int main(int argc, char *argv[]) {
 
   signal(SIGINT, signalHandler);
 
-  Server *server = NULL;
-
   try {
-    server = new Server(argv[2]);
-    CommandHandler *commandHandler = server->commandHandler;
+    Server server(argv[2]);
+    CommandHandler *commandHandler = server.commandHandler;
     commandHandler->registerCommand("CAP", capCommand, false);
     commandHandler->registerCommand("PASS", passCommand, false, 1);
     commandHandler->registerCommand("NICK", nickCommand, false);
@@ -37,13 +35,11 @@ int main(int argc, char *argv[]) {
     commandHandler->registerCommand("TOPIC", topicCommand, false, 1);
     commandHandler->registerCommand("MODE", modeCommand, false, 1);
     commandHandler->registerCommand("INVITE", inviteCommand, false, 2);
-    server->listen(atoi(argv[1]));
+    server.listen(atoi(argv[1]));
   } catch (std::exception &e) {
     Logger::error(e.what());
     return EXIT_FAILURE;
   }
-
-  delete server;
 
   return EXIT_SUCCESS;
 }
