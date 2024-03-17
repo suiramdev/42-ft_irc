@@ -21,5 +21,8 @@ void nickCommand(const std::vector<std::string> params, Client &sender) {
     return;
   }
 
+  sender.server().broadcast(":" + sender.nickname + "!" + sender.username +
+                            "@" + sender.hostname + " NICK " + params[0]);
+
   sender.nickname = params[0];
 }

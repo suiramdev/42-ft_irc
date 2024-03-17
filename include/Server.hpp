@@ -111,6 +111,13 @@ public:
    */
   void removeChannel(std::string name);
 
+  /**
+   * @brief Broadcast a message to all clients
+   *
+   * @param message The message to broadcast
+   */
+  void broadcast(const std::string &message);
+
   class SocketException : public std::exception {
   private:
     std::string _msg;

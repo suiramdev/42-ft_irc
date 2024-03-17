@@ -201,3 +201,10 @@ void Server::removeChannel(std::string name) {
   delete _channels[name];
   _channels.erase(name);
 }
+
+void Server::broadcast(const std::string &message) {
+  for (std::map<int, Client *>::iterator it = _clients.begin();
+       it != _clients.end(); ++it) {
+    it->second->send(message);
+  }
+}
