@@ -67,7 +67,7 @@ public:
    *
    * @return The messages
    */
-  std::vector<MessageData> getMessages();
+  std::vector<Message> getMessages();
 
   /**
    * @brief Join a channel

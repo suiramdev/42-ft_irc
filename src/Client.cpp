@@ -15,7 +15,7 @@
 Client::Client(Server &server, int fd)
     : _server(server), _fd(fd), _message(""), _registered(false),
       negotiating(false), password(""), nickname(""), username(""), mode(-1),
-      hostname(""), realname("") {}
+      hostname("localhost"), realname("") {}
 
 Client::~Client() {
   if (_fd > 0) {
@@ -58,15 +58,19 @@ ssize_t Client::read() {
   return bytes;
 }
 
-std::vector<MessageData> Client::getMessages() {
-  std::vector<MessageData> messages;
+std::vector<Message> Client::getMessages() {
+  std::vector<Message> messages;
 
-  size_t carriageReturnPos = _message.find("\r\n");
-  while (carriageReturnPos != std::string::npos) {
-    std::string message = _message.substr(0, carriageReturnPos);
-    _message.erase(0, carriageReturnPos + 2);
-    messages.push_back(Message::parse(message));
-    carriageReturnPos = _message.find("\r\n");
+  size_t pos;
+  while ((pos = _message.find("\r\n")) != std::string::npos) {
+    std::string message = _message.substr(0, pos);
+    _message.erase(0, pos + 2);
+    try {
+      messages.push_back(Message(message));
+    } catch (const std::exception &e) {
+      Logger::warning(e.what());
+    }
+    pos = _message.find("\r\n");
   }
 
   return messages;

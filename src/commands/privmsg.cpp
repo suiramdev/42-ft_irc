@@ -27,10 +27,9 @@ void privmsgCommand(const std::vector<std::string> params, Client &sender) {
       return;
     }
 
-    channel->send(":" + sender.nickname + "!" + sender.username + "@" +
-                      sender.hostname + " PRIVMSG " + params[0] + " :" +
-                      params[1],
-                  sender);
+    channel->send(Message("PRIVMSG", params, sender.nickname, sender.username,
+                          sender.hostname)
+                      .serialize());
   } else {
     Client *client = sender.server().getClient(params[0]);
 
@@ -39,7 +38,8 @@ void privmsgCommand(const std::vector<std::string> params, Client &sender) {
       return;
     }
 
-    client->send(":" + sender.nickname + "!" + sender.username + "@" +
-                 sender.hostname + " PRIVMSG " + params[0] + " :" + params[1]);
+    client->send(Message("PRIVMSG", params, sender.nickname, sender.username,
+                         sender.hostname)
+                     .serialize());
   }
 }

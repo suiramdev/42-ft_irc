@@ -1,5 +1,6 @@
 #include "Channel.hpp"
 #include "Client.hpp"
+#include "Message.hpp"
 #include "REPLIES.hpp"
 #include "Server.hpp"
 #include <string>
@@ -37,6 +38,8 @@ void kickCommand(const std::vector<std::string> params, Client &sender) {
   }
 
   target->kickChannel(params[0]);
-  channel->send(":" + sender.nickname + "!" + sender.username + "@" +
-                sender.hostname + " KICK " + params[0] + " " + params[1]);
+
+  channel->send(
+      Message("KICK", params, sender.nickname, sender.username, sender.hostname)
+          .serialize());
 }

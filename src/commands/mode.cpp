@@ -1,5 +1,6 @@
 #include "Channel.hpp"
 #include "Client.hpp"
+#include "Message.hpp"
 #include "REPLIES.hpp"
 #include "Server.hpp"
 #include <sstream>
@@ -83,7 +84,12 @@ void modeCommand(const std::vector<std::string> params, Client &sender) {
       break;
     }
 
-    channel->send(":" + sender.nickname + "!" + sender.username + "@" +
-                  sender.hostname + " MODE " + params[0] + " " + params[1]);
+    std::vector<std::string> sendParams = params;
+    if (params.size() > 2) {
+      sendParams.erase(sendParams.begin() + 2);
+    }
+    channel->send(Message("MODE", sendParams, sender.nickname, sender.username,
+                          sender.hostname)
+                      .serialize());
   }
 }

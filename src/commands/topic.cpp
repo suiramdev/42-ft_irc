@@ -1,5 +1,6 @@
 #include "Channel.hpp"
 #include "Client.hpp"
+#include "Message.hpp"
 #include "REPLIES.hpp"
 #include "Server.hpp"
 #include <ctime>
@@ -40,7 +41,9 @@ void topicCommand(const std::vector<std::string> params, Client &sender) {
     channel->topic = params[1];
     channel->topicSetter = &sender;
     channel->topicSetTime = time(NULL);
-    channel->send(":" + sender.nickname + "!" + sender.username + "@" +
-                  sender.hostname + " TOPIC " + params[0] + " :" + params[1]);
+
+    channel->send(Message("TOPIC", params, sender.nickname, sender.username,
+                          sender.hostname)
+                      .serialize());
   }
 }

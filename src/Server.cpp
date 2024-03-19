@@ -138,9 +138,8 @@ void Server::handle() {
             continue;
           }
 
-          std::vector<MessageData> messages =
-              _clients[_pfds[i].fd]->getMessages();
-          for (std::vector<MessageData>::iterator it = messages.begin();
+          std::vector<Message> messages = _clients[_pfds[i].fd]->getMessages();
+          for (std::vector<Message>::iterator it = messages.begin();
                it != messages.end(); ++it) {
             commandHandler->handleCommand(it->command, it->params,
                                           *_clients[_pfds[i].fd]);

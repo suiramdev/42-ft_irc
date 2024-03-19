@@ -1,5 +1,6 @@
 #include "Channel.hpp"
 #include "Client.hpp"
+#include "Message.hpp"
 #include "REPLIES.hpp"
 #include "Server.hpp"
 #include <string>
@@ -32,6 +33,8 @@ void inviteCommand(const std::vector<std::string> params, Client &sender) {
   }
 
   sender.send(RPL_INVITING(sender.nickname, params[0], params[1]));
-  target->send(":" + sender.nickname + "!" + sender.username + "@" +
-               sender.hostname + " INVITE " + params[0] + " " + params[1]);
+
+  target->send(Message("INVITE", params, sender.nickname, sender.username,
+                       sender.hostname)
+                   .serialize());
 }

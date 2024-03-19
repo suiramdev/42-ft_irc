@@ -1,4 +1,5 @@
 #include "Client.hpp"
+#include "Message.hpp"
 #include "REPLIES.hpp"
 #include "Server.hpp"
 #include <string>
@@ -21,8 +22,9 @@ void nickCommand(const std::vector<std::string> params, Client &sender) {
     return;
   }
 
-  sender.server().broadcast(":" + sender.nickname + "!" + sender.username +
-                            "@" + sender.hostname + " NICK " + params[0]);
+  sender.server().broadcast(
+      Message("NICK", params, sender.nickname, sender.username, sender.hostname)
+          .serialize());
 
   sender.nickname = params[0];
 }
