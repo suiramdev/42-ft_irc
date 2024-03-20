@@ -23,7 +23,7 @@ void nickCommand(const std::vector<std::string> params, Client &sender) {
   }
 
   if (!sender.nickname.empty()) {
-    sender.server().broadcast(Message("NICK", {params[0]}, sender.nickname,
+    sender.server().broadcast(Message("NICK", params, sender.nickname,
                                       sender.username, sender.hostname)
                                   .serialize());
   }
