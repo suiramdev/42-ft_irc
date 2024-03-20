@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Message.hpp"
+#include "Socket.hpp"
 #include <exception>
 #include <netdb.h>
 #include <string>
@@ -9,13 +10,21 @@
 
 class Client {
 private:
-  int _fd;
-  struct addrinfo *_res;
+  Socket *_socket;
   std::string _message;
 
 public:
   Client();
+  Client(const char *hostname, const char *port);
   ~Client();
+
+  /**
+   * @brief Connect to a server
+   *
+   * @param hostname The hostname of the server
+   * @param port The port to connect to
+   */
+  void connect(const char *hostname, const char *port);
 
   /**
    * @brief Read incoming messages from the server
@@ -29,7 +38,7 @@ public:
    *
    * @return The messages
    */
-  std::vector<MessageData> getMessages();
+  std::vector<Message> getMessages();
 
   /**
    * @brief Send a message to the server
@@ -37,14 +46,6 @@ public:
    * @param message The message to send
    */
   void send(const std::string &message);
-
-  /**
-   * @brief Connect to a server
-   *
-   * @param hostname The hostname of the server
-   * @param port The port to connect to
-   */
-  void connect(const char *hostname, const char *port);
 
   /**
    * @brief Authenticate with the server
