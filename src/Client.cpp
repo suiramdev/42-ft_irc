@@ -148,8 +148,7 @@ void Client::kickChannel(const std::string &name) {
 }
 
 void Client::quit() {
-  for (typename std::map<std::string, Channel *>::iterator it =
-           _channels.begin();
+  for (std::map<std::string, Channel *>::iterator it = _channels.begin();
        it != _channels.end(); ++it) {
     it->second->removeMember(*this);
   }
