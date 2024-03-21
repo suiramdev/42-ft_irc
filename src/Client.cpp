@@ -111,8 +111,7 @@ void Client::joinChannel(const std::string &name, const std::string &key) {
 
   _channels[name] = channel;
   channel->send(":" + nickname + "!" + username + "@" + hostname + " JOIN " +
-                    name,
-                *this);
+                name);
   if (channel->topic.empty()) {
     send(RPL_NOTOPIC(nickname, name));
   } else {
