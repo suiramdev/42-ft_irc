@@ -29,7 +29,8 @@ void privmsgCommand(const std::vector<std::string> params, Client &sender) {
 
     channel->send(Message("PRIVMSG", params, sender.nickname, sender.username,
                           sender.hostname)
-                      .serialize());
+                      .serialize(),
+                  sender);
   } else {
     Client *client = sender.server().getClient(params[0]);
 
