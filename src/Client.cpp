@@ -111,7 +111,8 @@ void Client::joinChannel(const std::string &name, const std::string &key) {
 
   _channels[name] = channel;
   channel->send(":" + nickname + "!" + username + "@" + hostname + " JOIN " +
-                name);
+                    name,
+                *this);
   if (channel->topic.empty()) {
     send(RPL_NOTOPIC(nickname, name));
   } else {
@@ -146,4 +147,11 @@ void Client::kickChannel(const std::string &name) {
   _channels.erase(name);
 }
 
-void Client::quit() { _server.removeClient(_fd); }
+void Client::quit() {
+  for (typename std::map<std::string, Channel *>::iterator it =
+           _channels.begin();
+       it != _channels.end(); ++it) {
+    it->second->removeMember(*this);
+  }
+  _server.removeClient(_fd);
+}
