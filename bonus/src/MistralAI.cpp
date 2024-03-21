@@ -26,5 +26,12 @@ std::string MistralAI::prompt(const std::string &message) {
   }
 
   send(_socket->getFd(), message.c_str(), message.size(), 0);
-  return "";
+  char buffer[1024] = {0};
+
+  ssize_t bytes = recv(_socket->getFd(), buffer, 1024, 0);
+  if (bytes > 0) {
+    return std::string(buffer);
+  }
+
+  return "Internal error: could not receive response";
 }
