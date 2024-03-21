@@ -37,4 +37,6 @@ void inviteCommand(const std::vector<std::string> params, Client &sender) {
   target->send(Message("INVITE", params, sender.nickname, sender.username,
                        sender.hostname)
                    .serialize());
+
+  channel->inviteMember(*target);
 }

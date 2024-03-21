@@ -47,6 +47,8 @@ void Channel::removeMember(Client &client) {
 
 void Channel::inviteMember(Client &client) { _invited[client.fd()] = &client; }
 
+void Channel::removeInvitation(Client &client) { _invited.erase(client.fd()); }
+
 bool Channel::isInvited(Client &client) {
   return _invited.find(client.fd()) != _invited.end();
 }

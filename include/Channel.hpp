@@ -5,11 +5,11 @@
 #include <string>
 
 typedef enum {
-  NONE_MODE = 0,
-  LIMIT_MODE = 1,
-  INVITE_MODE = 2,
-  KEY_MODE = 3,
-  TOPIC_MODE = 4,
+  NONE_MODE = 0b00000001,
+  LIMIT_MODE = 0b00000010,
+  INVITE_MODE = 0b00000100,
+  KEY_MODE = 0b00001000,
+  TOPIC_MODE = 0b00010000,
 } ChannelMode;
 
 class Server;
@@ -80,6 +80,13 @@ public:
    * @param client The client to invite
    */
   void inviteMember(Client &client);
+
+  /**
+   * @brief Remove an invitation to the channel for a client
+   *
+   * @param client The client to remove the invitation for
+   */
+  void removeInvitation(Client &client);
 
   /**
    * @brief Check if a client is invited to the channel

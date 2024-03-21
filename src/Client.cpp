@@ -88,21 +88,22 @@ void Client::joinChannel(const std::string &name, const std::string &key) {
     if (channel->modes & LIMIT_MODE &&
         channel->members().size() >= channel->maxMembers) {
       send(ERR_CHANNELISFULL(nickname, name));
-      throw std::exception();
+      return;
     }
 
     if (channel->modes & INVITE_MODE && !channel->isInvited(*this)) {
       send(ERR_INVITEONLYCHAN(nickname, name));
-      throw std::exception();
+      return;
     }
 
     if (channel->modes & KEY_MODE && channel->key != key) {
       send(ERR_BADCHANNELKEY(nickname, name));
-      throw std::exception();
+      return;
     }
 
     if (channel->addMember(*this, false)) {
       _channels[name] = channel;
+      channel->removeInvitation(*this);
     }
   } else {
     channel = _server.addChannel(name, key);
