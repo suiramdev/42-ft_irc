@@ -15,7 +15,7 @@ NAME				:= ircserv
 SRC_DIR     := src
 INC_DIR     := include
 BUILD_DIR		:= .build
-BONUS_DIR		:= bonus
+BONUS_DIR		:= bot
 
 SRCS				:= $(shell find $(SRC_DIR) -type f -name '*.cpp')
 OBJS				:= $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
