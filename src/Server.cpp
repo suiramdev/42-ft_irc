@@ -134,7 +134,7 @@ void Server::handle() {
 
           ssize_t bytes_read = _clients[_pfds[i].fd]->read();
           if (bytes_read <= 0) {
-            removeClient(_pfds[i].fd);
+            _clients[_pfds[i].fd]->quit();
             continue;
           }
 
